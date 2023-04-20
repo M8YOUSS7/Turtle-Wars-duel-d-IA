@@ -9,6 +9,7 @@ import numpy as np;
 import random;
 from enum import Enum;
 import aim;
+import math as mt;
 
 Directions=Enum("Directions", ["HAUT", "BAS", "GAUCHE", "DROITE"])
 
@@ -25,100 +26,112 @@ class Tortue:
         return (self.x, self.y)
     
     def monte(self):
-        if self.y>0:
-            self.y -= 1
-            self.endurance -= 30
+        self.x -= 1
+        self.endurance -= 30
         
     def descends(self):
-        self.y += 1
+        self.x += 1
         self.endurance -= 30
         
     def gauche(self):
-        if self.x > 0:
-            self.x -=1
-            self.endurance -= 30
+        self.y -= 1
+        self.endurance -= 30
         
     def droite(self):
-        self.x += 1
+        self.y += 1
         self.endurance -= 30
 
     def tire(self, trt):
-        self.endurance -= 40
         for i in range(self.nbArme):
             trt.vie -= 25
+        self.endurance -= 40
     
 class Action:
     def __init__(self, act):
         self.action = act
 
     def swap(self, x1, y1, x2, y2, grille):
-        val = grille[x1, y1]
-        grille[x1, y1] = grille[x2, y2]
-        grille[x2, y2] = val
-
-    def testPosVide(self, x1, x2, y1, y2, grille):
-        return grille[x1:x2, y1:y2]=="V"
+        t   = mt.sqrt(np.size(grille))
+        res = False
+        if (x2>=0) and (x2<t) and (y2>=0) and (y2<t) and (grille[x2, y2]=="V"):
+            val = grille[x1, y1]
+            grille[x1, y1] = "V"
+            grille[x2, y2] = val
+            res = True
+        
+        return res
 
     def execAct(self, jr, adv, grille):
+        x =jr.x
+        y =jr.y
+        
         if self.action==aim.typeAct.MONTE:
-            x =jr.x
-            y =jr.y
             jr.monte()
-            self.swap(x, y, jr.x, jr.y, grille)
+            if self.swap(x, y, jr.x, jr.y, grille)==False:
+                jr.descends()
+                jr.endurance += 50
             
         elif self.action==aim.typeAct.DESCENDS:
-            x =jr.x
-            y =jr.y
             jr.descends()
-            self.swap(x, y, jr.x, jr.y, grille)
+            if self.swap(x, y, jr.x, jr.y, grille)==False:
+                jr.monte()
+                jr.endurance += 50
 
         elif self.action==aim.typeAct.GAUCHE:
-            x =jr.x
-            y =jr.y
             jr.gauche()
-            self.swap(x, y, jr.x, jr.y, grille)
+            if self.swap(x, y, jr.x, jr.y, grille)==False:
+                jr.droite()
+                jr.endurance += 50
 
         elif self.action==aim.typeAct.DROITE:
-            x =jr.x
-            y =jr.y
             jr.droite()
-            self.swap(x, y, jr.x, jr.y, grille)
+            if self.swap(x, y, jr.x, jr.y, grille)==False:
+                jr.gauche()
+                jr.endurance += 50
             
         elif self.action==aim.typeAct.TIRE:
             jr.tire(adv)
     
     def execActDebug(self, jr, adv, grille):
-        if self.action==aim.typeAct.MONTE:
-            x =jr.x
-            y =jr.y
+        x =jr.x
+        y =jr.y
+        ply = grille[x, y]
+
+        if self.action==aim.typeAct.MONTE:    
             jr.monte()
-            self.swap(x, y, jr.x, jr.y, grille)
-            print("MONTE")
+            if self.swap(x, y, jr.x, jr.y, grille)==False:
+                jr.descends()
+                jr.endurance += 50
+            
+            print("J", ply, " MONTE : (",x,",",y,") => (",jr.x,",",jr.y,")")
             
         elif self.action==aim.typeAct.DESCENDS:
-            x =jr.x
-            y =jr.y
             jr.descends()
-            self.swap(x, y, jr.x, jr.y, grille)
-            print("DESCENDS")
+            if self.swap(x, y, jr.x, jr.y, grille)==False:
+                jr.monte()
+                jr.endurance += 50
+
+            print("J", ply, " DESCENDS : (",x,",",y,") => (",jr.x,",",jr.y,")")
             
         elif self.action==aim.typeAct.GAUCHE:
-            x =jr.x
-            y =jr.y
             jr.gauche()
-            self.swap(x, y, jr.x, jr.y, grille)
-            print("VAS A GAUCHE")
+            if self.swap(x, y, jr.x, jr.y, grille)==False:
+                jr.droite()
+                jr.endurance += 50
+
+            print("J", ply, " GAUCHE : (",x,",",y,") => (",jr.x,",",jr.y,")")
 
         elif self.action==aim.typeAct.DROITE:
-            x =jr.x
-            y =jr.y
             jr.droite()
-            self.swap(x, y, jr.x, jr.y, grille)
-            print("VAS A DROITE")
+            if self.swap(x, y, jr.x, jr.y, grille)==False:
+                jr.gauche()
+                jr.endurance += 50
+
+            print("J", ply, " DROITE : (",x,",",y,") => (",jr.x,",",jr.y,")")
             
         elif self.action==aim.typeAct.TIRE:
             jr.tire(adv)
-            print("TIRE")
+            print("J", ply, " TIRE")
     
 class Joueur:
     def __init__(self, name, x, y, ia):
@@ -128,19 +141,19 @@ class Joueur:
         
         if ia=="expert":
             self.aim = aim.IAExpert()
-        else :
+        else:
             self.aim = aim.IA(ia)
 
     def joue(self, adv, grille):
-        return self.aim.prochainCoup(self.trt, adv.trt, grille)
-        """while(self.trt.endurance > 1):
-            coup = self.aim.prochainCoup(self.trt, adv.trt, grille)
-            match coup:
-                case typeAct.TIRE:
-                    self.trt.tire(adv.trt)
-                case typeAct.DESCENDS:
-                    self.trt.descends()
-"""
+        while self.trt.endurance>0:
+            act = Action(self.aim.prochainCoup(self.trt, adv.trt, grille))
+            act.execActDebug(self.trt, adv.trt, grille)
+
+            if (adv.trt.endurance+40)<100:
+                adv.trt.endurance +=40
+            else:
+                adv.endurance=100
+
                 
 class Arene:
     def __init__(self, tailleGrille, ia1, ia2):
@@ -151,13 +164,13 @@ class Arene:
         self.grille[self.j1.trt.x, self.j1.trt.y] = "1"
         self.grille[self.j2.trt.x, self.j2.trt.y] = "2"
         
-        """
+        
         for i in range(tailleGrille):
             x = random.randint(0,t)
             y = random.randint(0,t)
             if self.grille[x, y]=="V":
                 self.grille[x, y] = "O"
-        """
+        
         self.tour =0
         
     def gameOver(self):
@@ -171,6 +184,17 @@ class Arene:
         
         return 0        
     
+    def affiche(self, mes):
+        print("-----",mes,"-----")
+        print(self.grille)
+
+        print("----- J1 -----")
+        print("Endurence :", self.j1.trt.endurance, ", Vie :", self.j1.trt.vie)
+        
+        print("----- J2 -----")
+        print("Endurence :", self.j2.trt.endurance, ", Vie :", self.j2.trt.vie)
+
+
     def joue(self):
         while self.gameOver()==False:
             if self.tour==0:
@@ -237,9 +261,23 @@ class Arene:
         print("--- Big Winner - ",winner,"---")
         
     def joueDebugIA(self):
-        print("----- Debut de jeu -----\n")
-        print(self.grille)
-        print("----- J1 -----")
-        action = Action(self.j1.joue(self.j2, self.grille))
-        action.execActDebug(self.j1.trt, self.j2.trt, self.grille)
-        print(self.grille)
+        self.affiche("Debut de jeu")
+
+        while(self.gameOver()==False):
+            if self.tour==0:
+                self.j1.joue(self.j2, self.grille)
+                self.affiche("Etat du jeu")
+                self.tour += 1
+
+            elif self.tour==1:
+                self.j2.joue(self.j1, self.grille)
+                self.affiche("Etat du jeu")
+                self.tour -= 1
+
+        winner = self.winner()
+        if winner==1:
+            self.grille[self.j2.trt.x, self.j2.trt.y] = "V"
+        elif winner==2:
+            self.grille[self.j1.trt.x, self.j1.trt.y] = "V"
+        
+        print("--- Fin de jeu --- Big Winner - ",winner,"---")

@@ -96,6 +96,12 @@ class IAExpert(IA):
     def __init__(self):
         IA.__init__(self, "expert")
     
+    def ligVide(self, x1, x2, y, grille):
+        return (grille[x1:x2, y]=="V").all()
+
+    def colVide(self, x, y1, y2, grille):
+        return (grille[x, y1:y2]=="V").all()
+
     def prochainCoup(self, jr, adv, grille):
         xTest = jr.x - adv.x
         yTest = jr.y - adv.y
@@ -104,22 +110,39 @@ class IAExpert(IA):
             if yTest==-1 or yTest==1:
                 return typeAct.TIRE
             
-            elif yTest>1:
-                return typeAct.DESCENDS
+            elif yTest>1 and self.colVide(jr.x, jr.y, adv.y, grille)==True:
+                return typeAct.TIRE
             
-            elif yTest<-1:
-                return typeAct.MONTE
+            elif yTest<-1 and self.colVide(jr.x, adv.y, jr.y, grille)==True:
+                return typeAct.TIRE
+
+            else:
+                dTest = random.randint(1,2)
+                
+                if dTest==1:
+                    return typeAct.GAUCHE
+                elif dTest==2:
+                    return typeAct.DROITE
+            
+            
             
         elif yTest==0:
             if xTest==-1 or xTest==1:
                 return typeAct.TIRE
             
-            elif yTest>1:
-                return typeAct.GAUCHE
+            elif xTest>1 and self.ligVide(jr.x, adv.x, jr.y, grille):
+                return typeAct.TIRE
             
-            elif yTest<-1:
-                return typeAct.DROITE
-            
+            elif xTest<-1 and self.ligVide(adv.x, jr.x, jr.y, grille):
+                return typeAct.TIRE
+
+            else:
+                dTest = random.randint(1,2)
+                
+                if dTest==1:
+                    return typeAct.MONTE
+                elif dTest==2:
+                    return typeAct.DESCENDS
         else:
             dTest = random.randint(1,4)
             
