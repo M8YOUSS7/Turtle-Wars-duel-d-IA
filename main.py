@@ -11,8 +11,8 @@ import modele as md;
 if __name__ == "__main__":
     debug = False
     size  = 5
-    ia1 = ""
-    ia2 = ""
+    ia1 = "expert"
+    ia2 = "expert"
     
     """
         Récupération des args
@@ -33,6 +33,7 @@ if __name__ == "__main__":
                 print("---Bienvenu sur Turtle Wars ---\n---By Mahamt Youssouf : @yyouss---")
                 print("--size (-s) pour fixer la taille")
                 print("--debug (-d) pour utiliser le mode debug")
+                print("--aim1(2) pour speciffier quel IA dois utiliser le joueur 1(2)")
                 exit()
             
             elif arg=="--aim1":
@@ -46,4 +47,4 @@ if __name__ == "__main__":
         monAr.joueDebugIA()
     else:
         monAr = md.Arene(size, ia1, ia2)
-        #monAr.joue()
+        monAr.joue()

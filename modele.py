@@ -13,38 +13,105 @@ import math as mt;
 
 Directions=Enum("Directions", ["HAUT", "BAS", "GAUCHE", "DROITE"])
 
+class Arme:
+    def __init__(self, nom, poids):
+        self.nom       = nom
+        self.poids     = poids
+        
+        if poids<5:
+            self.degat = 15
+            self.charge = 2
+            
+        elif poids<10:
+            self.degat = 25
+            self.charge = 4
+            
+        else:
+            self.degat = 35
+            self.charge = 8
+        
+        def getDegats(self):
+            return self.degat
+        
+        def getCharge(self):
+            return self.charge
+    
 class Tortue:
-    def __init__(self,  x, y, vie, endurance, nbArme):
+    def __init__(self,  x, y, vie, endurance):
         self.vie       = vie
         self.endurance = endurance
         self.x         = x
         self.y         = y
-        self.nbArme    = nbArme
         self.listArm   = []
         
     def getPos(self):
         return (self.x, self.y)
     
     def monte(self):
-        self.x -= 1
-        self.endurance -= 30
+        end = self.chargeTotal()+10
+        if (self.endurance-end)>0:
+            self.x -= 1
+            self.endurance -= end
+            return True
+        else:
+            return False
         
     def descends(self):
-        self.x += 1
-        self.endurance -= 30
+        end = self.chargeTotal()+10
+        if (self.endurance-end)>0:
+            self.x += 1
+            self.endurance -= end
+            return True
+        else:
+            return False
         
     def gauche(self):
-        self.y -= 1
-        self.endurance -= 30
+        end = self.chargeTotal()+10
+        if (self.endurance-end)>0:
+            self.y -= 1
+            self.endurance -= end
+            return True
+        else:
+            return False
         
     def droite(self):
-        self.y += 1
-        self.endurance -= 30
-
-    def tire(self, trt):
-        for i in range(self.nbArme):
-            trt.vie -= 25
-        self.endurance -= 40
+        end = self.chargeTotal()+10
+        if (self.endurance-end)>0:
+            self.y += 1
+            self.endurance -= end
+            return True
+        else:
+            return False
+        
+    def tire(self, adv):
+        dgt = self.degatTotal()
+        end = self.chargeTotal()+10
+        if (self.endurance-end)>0:
+            if (adv.vie-dgt)>0:
+                adv.vie       -= dgt
+                self.endurance -= end
+            else:
+                adv.vie        = 0
+                self.endurance -= end
+            
+            return True
+        else:
+            return False
+        
+    def ajtArm(self, nom, poids):
+        self.listArm.append(Arme(nom, poids))
+        
+    def chargeTotal(self):
+        res = 0
+        for arm in self.listArm:
+            res += arm.charge
+        return res
+    
+    def degatTotal(self):
+        res = 0
+        for arm in self.listArm:
+            res += arm.degat
+        return res
     
 class Action:
     def __init__(self, act):
@@ -69,25 +136,25 @@ class Action:
             jr.monte()
             if self.swap(x, y, jr.x, jr.y, grille)==False:
                 jr.descends()
-                jr.endurance += 50
+                jr.endurance += (2 * jr.chargeTotal()) + 10
             
         elif self.action==aim.typeAct.DESCENDS:
             jr.descends()
             if self.swap(x, y, jr.x, jr.y, grille)==False:
                 jr.monte()
-                jr.endurance += 50
+                jr.endurance += (2 * jr.chargeTotal()) + 10
 
         elif self.action==aim.typeAct.GAUCHE:
             jr.gauche()
             if self.swap(x, y, jr.x, jr.y, grille)==False:
                 jr.droite()
-                jr.endurance += 50
+                jr.endurance += (2 * jr.chargeTotal()) + 10
 
         elif self.action==aim.typeAct.DROITE:
             jr.droite()
             if self.swap(x, y, jr.x, jr.y, grille)==False:
                 jr.gauche()
-                jr.endurance += 50
+                jr.endurance += (2 * jr.chargeTotal()) + 10
             
         elif self.action==aim.typeAct.TIRE:
             jr.tire(adv)
@@ -98,49 +165,63 @@ class Action:
         ply = grille[x, y]
 
         if self.action==aim.typeAct.MONTE:    
-            jr.monte()
-            if self.swap(x, y, jr.x, jr.y, grille)==False:
-                jr.descends()
-                jr.endurance += 50
-            
-            print("J", ply, " MONTE : (",x,",",y,") => (",jr.x,",",jr.y,")")
-            
+            if jr.monte()==True:
+                if self.swap(x, y, jr.x, jr.y, grille)==False:
+                    jr.descends()
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+                
+                print("J", ply, " MONTE : (",x,",",y,") => (",jr.x,",",jr.y,")")
+            else:
+                jr.endurance = 0
+                
         elif self.action==aim.typeAct.DESCENDS:
-            jr.descends()
-            if self.swap(x, y, jr.x, jr.y, grille)==False:
-                jr.monte()
-                jr.endurance += 50
-
-            print("J", ply, " DESCENDS : (",x,",",y,") => (",jr.x,",",jr.y,")")
-            
-        elif self.action==aim.typeAct.GAUCHE:
-            jr.gauche()
-            if self.swap(x, y, jr.x, jr.y, grille)==False:
-                jr.droite()
-                jr.endurance += 50
-
-            print("J", ply, " GAUCHE : (",x,",",y,") => (",jr.x,",",jr.y,")")
-
-        elif self.action==aim.typeAct.DROITE:
-            jr.droite()
-            if self.swap(x, y, jr.x, jr.y, grille)==False:
-                jr.gauche()
-                jr.endurance += 50
-
-            print("J", ply, " DROITE : (",x,",",y,") => (",jr.x,",",jr.y,")")
-            
-        elif self.action==aim.typeAct.TIRE:
-            jr.tire(adv)
-            print("J", ply, " TIRE")
+            if jr.descends()==True:
+                if self.swap(x, y, jr.x, jr.y, grille)==False:
+                    jr.monte()
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
     
+                print("J", ply, " DESCENDS : (",x,",",y,") => (",jr.x,",",jr.y,")")
+            else:
+                jr.endurance = 0
+                
+        elif self.action==aim.typeAct.GAUCHE:
+            if jr.gauche()==True:
+                if self.swap(x, y, jr.x, jr.y, grille)==False:
+                    jr.droite()
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+                
+                print("J", ply, " GAUCHE : (",x,",",y,") => (",jr.x,",",jr.y,")")
+            else:
+                jr.endurance = 0
+        elif self.action==aim.typeAct.DROITE:
+            if jr.droite()==True:
+                if self.swap(x, y, jr.x, jr.y, grille)==False:
+                    jr.gauche()
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+    
+                print("J", ply, " DROITE : (",x,",",y,") => (",jr.x,",",jr.y,")")
+            else:
+                jr.endurance = 0
+        elif self.action==aim.typeAct.TIRE:
+            if jr.tire(adv)==True:
+                print("J", ply, " TIRE")
+            else:
+                jr.endurance = 0
 class Joueur:
     def __init__(self, name, x, y, ia):
         self.name   = name
         self.points = 0
-        self.trt    = Tortue(x, y, 100, 100, 1)
+        self.trt    = Tortue(x, y, 100, 100)
+        #self.trt.ajtArm("FAMAS", 4)
+        #self.trt.ajtArm("BROWING M2", 72)
+        #self.trt.ajtArm("FN MAG", 13)
+        #self.trt.ajtArm("AK-47", 5)
+        #self.trt.ajtArm("M16", 3)
         
         if ia=="expert":
             self.aim = aim.IAExpert()
+            self.trt.ajtArm("M16", 3)
+            
         else:
             self.aim = aim.IA(ia)
 
@@ -210,56 +291,6 @@ class Arene:
         elif self.winner()==2:
             self.grille[self.j1.trt.x, self.j1.trt.y] = "V"
 
-    def joueWithDebug(self):
-        print("----- Debut de jeu -----\n")
-        print(self.grille)
-        print("----- J1 -----\n")
-        print(self.j1.trt.endurance)
-        print(self.j1.trt.vie)
-        print("----- J2 -----\n")
-        print(self.j2.trt.endurance)
-        print(self.j2.trt.vie)
-
-        while(self.gameOver()==False):
-            if self.tour==0:
-                self.j1.joue(self.j2, self.grille)
-                print("----- Etat du jeu -----\n")
-                print(self.grille)
-                print("----- J1 -----\n")
-                print(self.j1.trt.endurance)
-                print(self.j1.trt.vie)
-                print("----- J2 -----\n")
-                print(self.j2.trt.endurance)
-                print(self.j2.trt.vie)
-                self.tour += 1
-            elif self.tour==1:
-                self.j2.joue(self.j1, self.grille)
-                print("----- Etat du jeu -----\n")
-                print(self.grille)
-                print("----- J1 -----\n")
-                print(self.j1.trt.endurance)
-                print(self.j1.trt.vie)
-                print("----- J2 -----\n")
-                print(self.j2.trt.endurance)
-                print(self.j2.trt.vie)
-                self.tour -= 1
-
-        winner = self.winner()
-        if winner==1:
-            self.grille[self.j2.trt.x, self.j2.trt.y] = "V"
-        elif winner==2:
-            self.grille[self.j1.trt.x, self.j1.trt.y] = "V"
-        
-        print("----- Fin de jeu -----\n")
-        print(self.grille)
-        print("----- J1 -----\n")
-        print(self.j1.trt.endurance)
-        print(self.j1.trt.vie)
-        print("----- J2 -----\n")
-        print(self.j2.trt.endurance)
-        print(self.j2.trt.vie)
-        print("--- Big Winner - ",winner,"---")
-        
     def joueDebugIA(self):
         self.affiche("Debut de jeu")
 
