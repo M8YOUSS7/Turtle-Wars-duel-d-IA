@@ -86,8 +86,8 @@ class Tortue:
     def tire(self, adv):
         dgt = self.degatTotal()
         end = self.chargeTotal()+10
-        if (self.endurance-end)>0:
-            if (adv.vie-dgt)>0:
+        if self.endurance-end>0:
+            if (adv.vie-dgt)>=0:
                 adv.vie       -= dgt
                 self.endurance -= end
             else:
@@ -164,13 +164,14 @@ class Action:
         y =jr.y
         ply = grille[x, y]
 
-        if self.action==aim.typeAct.MONTE:    
+        if self.action==aim.typeAct.MONTE:
             if jr.monte()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
                     jr.descends()
                     jr.endurance += (2 * jr.chargeTotal()) + 10
-                
-                print("J", ply, " MONTE : (",x,",",y,") => (",jr.x,",",jr.y,")")
+                    print("J", ply, " impossible de MONTE")
+                else:
+                    print("J", ply, " MONTE : (",x,",",y,") => (",jr.x,",",jr.y,")")
             else:
                 jr.endurance = 0
                 
@@ -179,8 +180,9 @@ class Action:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
                     jr.monte()
                     jr.endurance += (2 * jr.chargeTotal()) + 10
-    
-                print("J", ply, " DESCENDS : (",x,",",y,") => (",jr.x,",",jr.y,")")
+                    print("J", ply, " impossible de DESCENDRE")
+                else:
+                    print("J", ply, " DESCENDS : (",x,",",y,") => (",jr.x,",",jr.y,")")
             else:
                 jr.endurance = 0
                 
@@ -189,8 +191,9 @@ class Action:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
                     jr.droite()
                     jr.endurance += (2 * jr.chargeTotal()) + 10
-                
-                print("J", ply, " GAUCHE : (",x,",",y,") => (",jr.x,",",jr.y,")")
+                    print("J", ply, " impossible d'aller à GAUCHE")
+                else:
+                    print("J", ply, " GAUCHE : (",x,",",y,") => (",jr.x,",",jr.y,")")
             else:
                 jr.endurance = 0
         elif self.action==aim.typeAct.DROITE:
@@ -198,8 +201,9 @@ class Action:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
                     jr.gauche()
                     jr.endurance += (2 * jr.chargeTotal()) + 10
-    
-                print("J", ply, " DROITE : (",x,",",y,") => (",jr.x,",",jr.y,")")
+                    print("J", ply, " impossible d'aller à DROITE")
+                else:
+                    print("J", ply, " DROITE : (",x,",",y,") => (",jr.x,",",jr.y,")")
             else:
                 jr.endurance = 0
         elif self.action==aim.typeAct.TIRE:
@@ -207,6 +211,9 @@ class Action:
                 print("J", ply, " TIRE")
             else:
                 jr.endurance = 0
+                print("J", ply, " impossible de TIRE")
+                
+
 class Joueur:
     def __init__(self, name, x, y, ia):
         self.name   = name
@@ -226,14 +233,18 @@ class Joueur:
             self.aim = aim.IA(ia)
 
     def joue(self, adv, grille):
-        while self.trt.endurance>0:
+        while adv.trt.vie>0 and self.trt.endurance>0:
             act = Action(self.aim.prochainCoup(self.trt, adv.trt, grille))
             act.execActDebug(self.trt, adv.trt, grille)
 
-            if (adv.trt.endurance+40)<100:
-                adv.trt.endurance +=40
+            if (adv.trt.endurance+10)<=100:
+                adv.trt.endurance +=10
             else:
-                adv.endurance=100
+                adv.trt.endurance=100
+                
+        if adv.trt.vie==0:
+            adv.trt.endurance=0
+            grille[adv.trt.x, adv.trt.y] = "V"
 
                 
 class Arene:
@@ -255,7 +266,7 @@ class Arene:
         self.tour =0
         
     def gameOver(self):
-        return self.j1.trt.vie<=0 or self.j2.trt.vie<=0
+        return self.j1.trt.vie==0 or self.j2.trt.vie==0
     
     def winner(self):
         if self.j1.trt.vie>0:
@@ -306,9 +317,5 @@ class Arene:
                 self.tour -= 1
 
         winner = self.winner()
-        if winner==1:
-            self.grille[self.j2.trt.x, self.j2.trt.y] = "V"
-        elif winner==2:
-            self.grille[self.j1.trt.x, self.j1.trt.y] = "V"
         
         print("--- Fin de jeu --- Big Winner - ",winner,"---")
