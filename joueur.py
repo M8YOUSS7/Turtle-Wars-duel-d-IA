@@ -56,6 +56,9 @@ class Joueur:
     def save(self, grille, act):
         self.partieCourante.append([self.trt.vie, self.trt.endurance, grille, act])
 
+    def getPartieCourante(self):
+        return np.array(self.partieCourante, dtype=object)
+
     def joue(self, adv, grille):
         while adv.trt.vie>0 and self.trt.endurance>0:
             act                             = self.aim.prochainCoup(self.trt, adv.trt, grille)

@@ -6,6 +6,8 @@ Created on Thu Apr  6 18:19:04 2023
 @author: yyouss
 """
 
+
+import os.path
 from joueur import *
 import random;
                 
@@ -16,7 +18,7 @@ class Arene:
         self.j2                                   = Joueur("j2", random.randint(0,t), random.randint(0,t), ia2)
         self.tailleGrille                         = tailleGrille
         self.tour = random.randint(0, 1)
-        
+                
     def nouvellePartie(self):
         t                                         = self.tailleGrille-1
         self.grille                               = np.full((self.tailleGrille, self.tailleGrille), "V")
@@ -80,6 +82,11 @@ class Arene:
         print("--- Fin de jeu --- Big Winner - ",winner,"---")
 
     def save(self):
-        forSave = np.load("data.npz")
-        forSave.append(self.j1.partieCourante) if self.winner()==1 else forSave.append(self.j2.partieCourante)
-        
+        if os.path.isfile('./data.npz')==False:
+            np.savez('./data', a=self.j1.getPartieCourante()) if self.winner()==1 else np.savez('./data', a=self.j2.getPartieCourante())
+        else:
+            forSave = np.load('./data.npz', allow_pickle=True)
+            np.append(forSave['a'], self.j1.getPartieCourante) if self.winner()==1 else np.append(forSave['a'], self.j2.getPartieCourante)
+            #print(forSave['a'])
+            np.savez('./data', a=forSave['a'])
+            forSave.close()
