@@ -18,16 +18,9 @@ Naturelement les joueurs chercheront à s'appropcher l'un de l'autre afin de se 
 Lancer l'application avec pyhon3 main.py --help pour plus d'information.
 
 # To do :
-
-1) Corrigé les bugs, dans les cas ou les joueurs sont sur une diagonale et des obstacles sont sur la diagonale perdendicualire.
-  -- Exemple --
-  grille=[["v", "o", "v", "v"],
-          ["v", "2", "o", "v"],
-          ["v", "o", "1", "v"],
-          ["v", "v", "v", "v"]], bug...
-2)  Deep Learning
-  1=> Sauvegarde des parties
-  2=> Recuperations depuis la base de tous les données
+1)  Deep Learning
+  1=> Sauvegarde des parties => done
+  2=> Recuperations depuis la base de tous les données => done
   3=> Apprendre
   
 2)Interface Graphique (Simple).
