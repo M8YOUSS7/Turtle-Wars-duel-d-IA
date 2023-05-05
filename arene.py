@@ -47,33 +47,7 @@ class Arene:
         elif self.j2.trt.vie>0:
             return 2
         
-        return 0        
-    
-    def affiche(self, mes):
-        t   = int(mt.sqrt(np.size(self.grille)))
-        print("-----",mes,"-----")
-        print("----- J1 -----", "Endurence :", self.j1.trt.endurance, ", Vie :", self.j1.trt.vie)
-        print("----- J2 -----", "Endurence :", self.j2.trt.endurance, ", Vie :", self.j2.trt.vie)
-
-        for j in range(t):
-            print ("--", end="")
-        print("----")
-
-        for i in range(t):
-            print("| ", end="")
-            for j in range(t):
-                if self.grille[i,j]!="V":
-                    print(self.grille[i,j], " ", sep="", end="")
-                else:
-                    print("  ", end="")
-            print(" |", end="")
-            print("")
-        
-        for j in range(t):
-            print ("--", end="")
-        print("----")
-
-
+        return 0
 
     def joue(self):
         while(self.gameOver()==False):
@@ -90,17 +64,15 @@ class Arene:
                 self.tour -= 1
 
     def joueDebugIA(self):
-        self.affiche("Debut de jeu")
+        self.j1.affiche("Debut de jeu", self.j2, self.grille)
 
         while(self.gameOver()==False):
             if self.tour==0:
                 self.j1.joue(self.j2, self.grille)
-                self.affiche("Etat du jeu")
                 self.tour += 1
 
             elif self.tour==1:
                 self.j2.joue(self.j1, self.grille)
-                self.affiche("Etat du jeu")
                 self.tour -= 1
 
         winner = self.winner()

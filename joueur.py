@@ -27,10 +27,35 @@ class Joueur:
         else:
             self.aim = IA(ia)
 
+    def affiche(self, mes, adv, grille):
+        t   = int(mt.sqrt(np.size(grille)))
+        print("-----",mes,"-----")
+        print("----- J1 -----", "Endurence :", self.trt.endurance, ", Vie :", self.trt.vie, ", Points :", self.points)
+        print("----- J2 -----", "Endurence :", adv.trt.endurance, ", Vie :", adv.trt.vie, ", Points :", adv.points)
+
+        for j in range(t):
+            print ("--", end="")
+        print("----")
+
+        for i in range(t):
+            print("| ", end="")
+            for j in range(t):
+                if grille[i,j]!="V":
+                    print(grille[i,j], " ", sep="", end="")
+                else:
+                    print("  ", end="")
+            print(" |", end="")
+            print("")
+        
+        for j in range(t):
+            print ("--", end="")
+        print("----")
+
     def joue(self, adv, grille):
         while adv.trt.vie>0 and self.trt.endurance>0:
             act = Action(self.aim.prochainCoup(self.trt, adv.trt, grille))
             act.execActDebug(self.trt, adv.trt, grille)
+            self.affiche("Etat du jeu", adv, grille)
 
             if (adv.trt.endurance+10)<=100:
                 adv.trt.endurance +=10
