@@ -59,6 +59,7 @@ if __name__ == "__main__":
             for i in range(loop):
                 monAr.nouvellePartie()
                 monAr.joueDebugIA()
+                monAr.save()
 
             print("En",loop, "parties, J1 à gagnée", monAr.j1.points, " et J2 à gagnée", monAr.j2.points)
             
@@ -74,6 +75,7 @@ if __name__ == "__main__":
             for i in range(loop):
                 monAr.nouvellePartie()
                 monAr.joue()
+                monAr.save()
         else:
             for i in range(loop):
                 monAr.nouvellePartie()

@@ -27,6 +27,8 @@ class Joueur:
         else:
             self.aim = IA(ia)
 
+        self.partieCourante = []
+
     def affiche(self, mes, adv, grille):
         t   = int(mt.sqrt(np.size(grille)))
         print("-----",mes,"-----")
@@ -51,10 +53,36 @@ class Joueur:
             print ("--", end="")
         print("----")
 
+    def save(self, grille, act):
+        self.partieCourante.append([self.trt.vie, self.trt.endurance, grille, act])
+
     def joue(self, adv, grille):
         while adv.trt.vie>0 and self.trt.endurance>0:
-            act = Action(self.aim.prochainCoup(self.trt, adv.trt, grille))
-            act.execActDebug(self.trt, adv.trt, grille)
+            act                             = self.aim.prochainCoup(self.trt, adv.trt, grille)
+            forSave                         = np.copy(grille)
+            forSave[self.trt.x, self.trt.y] = "J"
+            forSave[adv.trt.x, adv.trt.y]   = "A"
+            self.save(forSave, act)
+            Action(act).execAct(self.trt, adv.trt, grille)
+
+            if (adv.trt.endurance+10)<=100:
+                adv.trt.endurance +=10
+            else:
+                adv.trt.endurance=100
+                
+        if adv.trt.vie==0:
+            adv.trt.endurance=0
+            grille[adv.trt.x, adv.trt.y] = "V"
+            self.points += 1
+
+    def joueDebug(self, adv, grille):
+        while adv.trt.vie>0 and self.trt.endurance>0:
+            act                             = self.aim.prochainCoup(self.trt, adv.trt, grille)
+            forSave                         = np.copy(grille)
+            forSave[self.trt.x, self.trt.y] = "J"
+            forSave[adv.trt.x, adv.trt.y]   = "A"
+            self.save(forSave, act)
+            Action(act).execActDebug(self.trt, adv.trt, grille)
             self.affiche("Etat du jeu", adv, grille)
 
             if (adv.trt.endurance+10)<=100:

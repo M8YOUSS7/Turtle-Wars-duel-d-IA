@@ -36,33 +36,45 @@ class Action:
     def execAct(self, jr, adv, grille):
         x =jr.x
         y =jr.y
-        
+        ply = grille[x, y]
+
         if self.action==typeAct.MONTE:
-            jr.monte()
-            if self.swap(x, y, jr.x, jr.y, grille)==False:
-                jr.descends()
-                jr.endurance += (2 * jr.chargeTotal()) + 10
-            
+            if jr.monte()==True:
+                if self.swap(x, y, jr.x, jr.y, grille)==False:
+                    jr.descends()
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+            else:
+                jr.endurance = 0
+                
         elif self.action==typeAct.DESCENDS:
-            jr.descends()
-            if self.swap(x, y, jr.x, jr.y, grille)==False:
-                jr.monte()
-                jr.endurance += (2 * jr.chargeTotal()) + 10
-
+            if jr.descends()==True:
+                if self.swap(x, y, jr.x, jr.y, grille)==False:
+                    jr.monte()
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+            else:
+                jr.endurance = 0
+                
         elif self.action==typeAct.GAUCHE:
-            jr.gauche()
-            if self.swap(x, y, jr.x, jr.y, grille)==False:
-                jr.droite()
-                jr.endurance += (2 * jr.chargeTotal()) + 10
-
+            if jr.gauche()==True:
+                if self.swap(x, y, jr.x, jr.y, grille)==False:
+                    jr.droite()
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+            else:
+                jr.endurance = 0
         elif self.action==typeAct.DROITE:
-            jr.droite()
-            if self.swap(x, y, jr.x, jr.y, grille)==False:
-                jr.gauche()
-                jr.endurance += (2 * jr.chargeTotal()) + 10
-            
+            if jr.droite()==True:
+                if self.swap(x, y, jr.x, jr.y, grille)==False:
+                    jr.gauche()
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+
+            else:
+                jr.endurance = 0
         elif self.action==typeAct.TIRE:
-            jr.tire(adv)
+            if jr.tire(adv)!=True:
+                jr.endurance = 0
+        else:
+            jr.endurance = 0
+            jr.vie = 0
     
     def execActDebug(self, jr, adv, grille):
         x =jr.x

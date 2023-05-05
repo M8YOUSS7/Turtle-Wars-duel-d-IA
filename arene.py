@@ -68,13 +68,18 @@ class Arene:
 
         while(self.gameOver()==False):
             if self.tour==0:
-                self.j1.joue(self.j2, self.grille)
+                self.j1.joueDebug(self.j2, self.grille)
                 self.tour += 1
 
             elif self.tour==1:
-                self.j2.joue(self.j1, self.grille)
+                self.j2.joueDebug(self.j1, self.grille)
                 self.tour -= 1
 
         winner = self.winner()
-        
+
         print("--- Fin de jeu --- Big Winner - ",winner,"---")
+
+    def save(self):
+        forSave = np.load("data.npz")
+        forSave.append(self.j1.partieCourante) if self.winner()==1 else forSave.append(self.j2.partieCourante)
+        
