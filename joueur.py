@@ -29,11 +29,16 @@ class Joueur:
 
         self.partieCourante = []
 
-    def affiche(self, mes, adv, grille):
+    def affiche(self, mes, adv, grille, det=True):
         t   = int(mt.sqrt(np.size(grille)))
+        jr  = grille[self.trt.x, self.trt.y]
+        ad  = grille[adv.trt.x, adv.trt.y]
+
         print("-----",mes,"-----")
-        print("----- J1 -----", "Endurence :", self.trt.endurance, ", Vie :", self.trt.vie, ", Points :", self.points)
-        print("----- J2 -----", "Endurence :", adv.trt.endurance, ", Vie :", adv.trt.vie, ", Points :", adv.points)
+
+        if det==True:
+            print("----- J", jr," -----", "Endurence :", self.trt.endurance, ", Vie :", self.trt.vie, ", Points :", self.points, sep="")
+            print("----- J", ad," -----", "Endurence :", adv.trt.endurance, ", Vie :", adv.trt.vie, ", Points :", adv.points, sep="")
 
         for j in range(t):
             print ("--", end="")
@@ -54,10 +59,13 @@ class Joueur:
         print("----")
 
     def save(self, grille, act):
-        self.partieCourante.append([self.trt.vie, self.trt.endurance, grille, act])
+        grille.reshape(-1)
+        res =[self.trt.vie, self.trt.endurance, act.value]
+        if not(res in self.partieCourante):
+            self.partieCourante.append(np.append(grille, res))
 
     def getPartieCourante(self):
-        return np.array(self.partieCourante, dtype=object)
+        return np.array(self.partieCourante)
 
     def joue(self, adv, grille):
         while adv.trt.vie>0 and self.trt.endurance>0:
@@ -68,7 +76,7 @@ class Joueur:
             self.save(forSave, act)
             Action(act).execAct(self.trt, adv.trt, grille)
 
-            if (adv.trt.endurance+10)<=100:
+            if (adv.trt.endurance+10)<100:
                 adv.trt.endurance +=10
             else:
                 adv.trt.endurance=100
@@ -86,13 +94,14 @@ class Joueur:
             forSave[adv.trt.x, adv.trt.y]   = "A"
             self.save(forSave, act)
             Action(act).execActDebug(self.trt, adv.trt, grille)
-            self.affiche("Etat du jeu", adv, grille)
 
-            if (adv.trt.endurance+10)<=100:
+            if (adv.trt.endurance+10)<100:
                 adv.trt.endurance +=10
             else:
                 adv.trt.endurance=100
                 
+            self.affiche("Etat du jeu", adv, grille)
+
         if adv.trt.vie==0:
             adv.trt.endurance=0
             grille[adv.trt.x, adv.trt.y] = "V"

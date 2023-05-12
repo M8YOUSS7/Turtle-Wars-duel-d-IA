@@ -18,6 +18,8 @@ class Arene:
         self.j2                                   = Joueur("j2", random.randint(0,t), random.randint(0,t), ia2)
         self.tailleGrille                         = tailleGrille
         self.tour = random.randint(0, 1)
+
+        self.fileName = "./DATA/data{}".format(tailleGrille)
                 
     def nouvellePartie(self):
         t                                         = self.tailleGrille-1
@@ -25,11 +27,11 @@ class Arene:
         self.j1.nouvelleTortue(random.randint(0,t), random.randint(0,t))
         self.j2.nouvelleTortue(random.randint(0,t), random.randint(0,t))
         
-        self.grille[self.j1.trt.x, self.j1.trt.y] = "1"
+        self.grille[self.j1.trt.x, self.j1.trt.y]  = "1"
         
         while self.grille[self.j2.trt.x, self.j2.trt.y] != "V":
             self.j2.trt.setPos(random.randint(0,t), random.randint(0,t))
-        self.grille[self.j2.trt.x, self.j2.trt.y] = "2"
+        self.grille[self.j2.trt.x, self.j2.trt.y]  = "2"
         
         for i in range(self.tailleGrille):
             x = random.randint(0, t)
@@ -57,23 +59,19 @@ class Arene:
                 self.j1.joue(self.j2, self.grille)
                 self.tour += 1
 
-            elif self.tour==1:
-                self.j2.joue(self.j1, self.grille)
-                self.tour -= 1
-
-            elif self.tour==1:
+            else:
                 self.j2.joue(self.j1, self.grille)
                 self.tour -= 1
 
     def joueDebugIA(self):
-        self.j1.affiche("Debut de jeu", self.j2, self.grille)
+        self.j1.affiche("Debut de jeu", self.j2, self.grille, False)
 
         while(self.gameOver()==False):
             if self.tour==0:
                 self.j1.joueDebug(self.j2, self.grille)
                 self.tour += 1
 
-            elif self.tour==1:
+            else:
                 self.j2.joueDebug(self.j1, self.grille)
                 self.tour -= 1
 
@@ -82,11 +80,23 @@ class Arene:
         print("--- Fin de jeu --- Big Winner - ",winner,"---")
 
     def save(self):
-        if os.path.isfile('./data.npz')==False:
-            np.savez('./data', a=self.j1.getPartieCourante()) if self.winner()==1 else np.savez('./data', a=self.j2.getPartieCourante())
+        if os.path.isfile(self.fileName+".npz")==False:
+            np.savez(self.fileName, a=self.j1.getPartieCourante()) if self.winner()==1 else np.savez(self.fileName, a=self.j2.getPartieCourante())
         else:
-            forSave = np.load('./data.npz', allow_pickle=True)
-            np.append(forSave['a'], self.j1.getPartieCourante) if self.winner()==1 else np.append(forSave['a'], self.j2.getPartieCourante)
-            #print(forSave['a'])
-            np.savez('./data', a=forSave['a'])
+            forSave = np.load(self.fileName+".npz")
+            data = forSave['a'].tolist()
+            
+            if self.winner()==1:
+                for e in self.j1.getPartieCourante().tolist():
+                    data.append(e)
+            else:
+                for e in self.j2.getPartieCourante().tolist():
+                    data.append(e)
+
+            np.savez(self.fileName, a=data)
             forSave.close()
+       
+    def archives(self):
+        if os.path.isfile(self.fileName+".npz")==True:
+            data = np.load(self.fileName+".npz")['a']
+            print(data)

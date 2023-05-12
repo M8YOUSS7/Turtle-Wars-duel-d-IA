@@ -11,12 +11,12 @@ from enum import Enum;
 import math as mt;
 
 class typeAct(Enum):
+    AUTRE    = 0
     MONTE    = 1
     DESCENDS = 2
     GAUCHE   = 3
     DROITE   = 4
     TIRE     = 5
-    AUTRE  = 7
 
 class Action:
     def __init__(self, act):
@@ -61,6 +61,7 @@ class Action:
                     jr.endurance += (2 * jr.chargeTotal()) + 10
             else:
                 jr.endurance = 0
+
         elif self.action==typeAct.DROITE:
             if jr.droite()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
@@ -69,6 +70,7 @@ class Action:
 
             else:
                 jr.endurance = 0
+
         elif self.action==typeAct.TIRE:
             if jr.tire(adv)!=True:
                 jr.endurance = 0
@@ -113,6 +115,7 @@ class Action:
                     print("J", ply, " GAUCHE : (",x,",",y,") => (",jr.x,",",jr.y,")", sep="")
             else:
                 jr.endurance = 0
+
         elif self.action==typeAct.DROITE:
             if jr.droite()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
@@ -123,6 +126,7 @@ class Action:
                     print("J", ply, " DROITE : (",x,",",y,") => (",jr.x,",",jr.y,")", sep="")
             else:
                 jr.endurance = 0
+                
         elif self.action==typeAct.TIRE:
             if jr.tire(adv)==True:
                 print("J", ply, " TIRE", sep="")

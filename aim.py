@@ -60,7 +60,7 @@ class IA:
     def prochainCoup(self, jr, adv, grille):
         pTest = self.deplacements(jr.x, jr.y, grille)
 
-        return typeAct.AUTRE
+        return pTest[random.randint(0,len(pTest)-1)]
     
 class IAExpert(IA):
     def __init__(self):
@@ -71,160 +71,238 @@ class IAExpert(IA):
         pTest = self.deplacements(jr.x, jr.y, grille)
         xTest = jr.x - adv.x
         yTest = jr.y - adv.y
+        """
+            Position de l'adversaire par rapport au joueur
+        """
+        mmCol   = True if xTest==0 else False
+        mmLigne = True if yTest==0 else False
+        enHaut  = True if xTest>0 else False
+        enBas   = True if xTest<0 else False
+        aGauche = True if yTest>0 else False
+        aDroite = True if yTest<0 else False
         
         if len(pTest)>0:
-            if xTest==0:
-                if yTest>=1 and self.colVide(jr.x, adv.y+1, jr.y, grille):
+            unChoix = pTest[random.randint(0,len(pTest)-1)]
+            if mmCol==True:
+                if yTest==1 or yTest==-1 or (aGauche==True and self.colVide(jr.x, adv.y+1, jr.y, grille)==True) or (aDroite==True and self.colVide(jr.x, jr.y+1, adv.y, grille)==True):
                     return typeAct.TIRE
                 
-                elif yTest>1 and self.colVide(jr.x, adv.y+1, jr.y, grille)==False:
+                elif aGauche==True and self.colVide(jr.x, adv.y+1, jr.y, grille)==False:
                     dTest = random.randint(0,3)
                     
-                    if dTest==1:
-                        if typeAct.MONTE in pTest:
-                            return typeAct.MONTE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    elif dTest==2:
-                        if typeAct.DESCENDS in pTest:
-                            return typeAct.DESCENDS
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    else:
+                    if dTest==0:
                         if typeAct.GAUCHE in pTest:
                             return typeAct.GAUCHE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                
-                elif yTest<=-1 and self.colVide(jr.x, jr.y+1, adv.y, grille):
-                    return typeAct.TIRE
-
-                elif yTest<-1 and self.colVide(jr.x, jr.y+1, adv.y, grille)==False:
-                    dTest = random.randint(1,3)
-                    
-                    if dTest==1:
-                        if typeAct.MONTE in pTest:
+                        elif typeAct.DESCENDS in pTest:
+                            return typeAct.DESCENDS
+                        elif typeAct.MONTE in pTest:
                             return typeAct.MONTE
                         else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    elif dTest==2:
-                        if typeAct.DESCENDS in pTest:
-                            return typeAct.DESCENDS
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    else:
-                        if typeAct.DROITE in pTest:
-                            return typeAct.DROITE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
+                            return unChoix
 
-                else:
-                    return pTest[random.randint(0,len(pTest)-1)]
-                
-            elif yTest==0:
-                if xTest>=1 and self.ligVide(adv.x+1, jr.x, jr.y, grille):
-                    return typeAct.TIRE
-                
-                elif xTest>1 and self.ligVide(adv.x+1, jr.x, jr.y, grille)==False:
-                    dTest = random.randint(1,3)
-                    
-                    if dTest==1:
-                        if typeAct.DROITE in pTest:
-                            return typeAct.DROITE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    elif dTest==2:
-                        if typeAct.GAUCHE in pTest:
-                            return typeAct.GAUCHE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
                     else:
-                        if typeAct.MONTE in pTest:
-                            return typeAct.MONTE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                
-                elif xTest<=-1 and self.ligVide(jr.x+1, adv.x, jr.y, grille):
-                    return typeAct.TIRE
-
-                elif xTest<-1 and self.ligVide(jr.x+1, adv.x, jr.y, grille)==False:
-                    dTest = random.randint(1,3)
-                    
-                    if dTest==1:
-                        if typeAct.DROITE in pTest:
-                            return typeAct.DROITE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    elif dTest==2:
-                        if typeAct.GAUCHE in pTest:
-                            return typeAct.GAUCHE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    else:
-                        if typeAct.DESCENDS in pTest:
-                            return typeAct.DESCENDS
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-
-                else:
-                    return pTest[random.randint(0,len(pTest)-1)]
-            else:
-                if xTest<0:
-                    if yTest<0:
-                        dTest = random.randint(1,2)
-                    
-                        if dTest==1:
-                            if typeAct.DROITE in pTest:
-                                return typeAct.DROITE
+                        dTest = random.randint(0,1)
+                        
+                        if dTest==0:
+                            if typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                        elif dTest==2:
+                                return unChoix
+                        else:
                             if typeAct.DESCENDS in pTest:
                                 return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                            
-                    else:
-                        dTest = random.randint(1,2)
+                                return unChoix
+
+                elif aDroite==True and self.colVide(jr.x, jr.y+1, adv.y, grille)==False:
+                    dTest = random.randint(0,3)
                     
-                        if dTest==1:
+                    if dTest==0:
+                        if typeAct.DROITE in pTest:
+                            return typeAct.DROITE
+                        elif typeAct.DESCENDS in pTest:
+                            return typeAct.DESCENDS
+                        elif typeAct.MONTE in pTest:
+                            return typeAct.MONTE
+                        else:
+                            return unChoix
+
+                    else:
+                        dTest = random.randint(0,1)
+                        
+                        if dTest==0:
+                            if typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            else:
+                                return unChoix
+                
+            elif mmLigne==True:
+                if xTest==1 or xTest==-1 or (enHaut==True and self.ligVide(adv.x+1, jr.x, jr.y, grille)==True) or (enBas==True and self.ligVide(jr.x+1, adv.x, jr.y, grille)==True):
+                    return typeAct.TIRE
+                
+                elif enHaut==True and self.ligVide(adv.x+1, jr.x, jr.y, grille)==False:
+                    dTest = random.randint(0,3)
+                    
+                    if dTest==0:
+                        if typeAct.MONTE in pTest:
+                            return typeAct.MONTE
+                        elif typeAct.DROITE in pTest:
+                            return typeAct.DROITE
+                        elif typeAct.GAUCHE in pTest:
+                            return typeAct.GAUCHE
+                        else:
+                            return unChoix
+
+                    else:
+                        dTest = random.randint(0,1)
+                        
+                        if dTest==0:
                             if typeAct.GAUCHE in pTest:
                                 return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                        elif dTest==2:
-                            if typeAct.DESCENDS in pTest:
+                                return unChoix
+                        else:
+                            if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            else:
+                                return unChoix
+
+                elif enBas==True and self.ligVide(jr.x+1, adv.x, jr.y, grille)==False:
+                    dTest = random.randint(0,3)
+                    
+                    if dTest==0:
+                        if typeAct.DESCENDS in pTest:
+                            return typeAct.DESCENDS
+                        elif typeAct.DROITE in pTest:
+                            return typeAct.DROITE
+                        elif typeAct.GAUCHE in pTest:
+                            return typeAct.GAUCHE
+                        else:
+                            return unChoix
+
+                    else:
+                        dTest = random.randint(0,1)
+                        
+                        if dTest==0:
+                            if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.DESCENDS in pTest:
                                 return typeAct.DESCENDS
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                    
-                elif yTest<0 and xTest>0:
-                    dTest = random.randint(1,2)
-                
-                    if dTest==1:
-                        if typeAct.DROITE in pTest:
-                                return typeAct.DROITE
+                                return unChoix
                         else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    elif dTest==2:
-                        if typeAct.MONTE in pTest:
-                                return typeAct.MONTE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                        
-                elif xTest>0 and yTest>0:
-                    dTest = random.randint(1,2)
-                
-                    if dTest==1:
-                        if typeAct.GAUCHE in pTest:
+                            if typeAct.GAUCHE in pTest:
                                 return typeAct.GAUCHE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    elif dTest==2:
-                        if typeAct.MONTE in pTest:
-                            return typeAct.MONTE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            else:
+                                return unChoix
+
+            elif enHaut==True and aGauche==True:
+                dTest = random.randint(0,1)
+                
+                if dTest==1:
+                    if typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    elif typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    else:
+                        return unChoix
+                else:
+                    if typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    elif typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    else:
+                        return unChoix
+            
+            elif enHaut==True and aDroite==True:
+                dTest = random.randint(0,1)
+                
+                if dTest==1:
+                    if typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    elif typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    else:
+                        return unChoix
+                else:
+                    if typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    elif typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    else:
+                        return unChoix
+
+            elif enBas==True and aGauche==True:
+                dTest = random.randint(0,1)
+                
+                if dTest==1:
+                    if typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    elif typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    else:
+                        return unChoix
+                else:
+                    if typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    elif typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    else:
+                        return unChoix
+
+            elif enBas==True and aDroite==True:
+                dTest = random.randint(0,1)
+                
+                if dTest==1:
+                    if typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    elif typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    else:
+                        return unChoix
+                else:
+                    if typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    elif typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    else:
+                        return unChoix
+
         else:
             return typeAct.AUTRE
 
@@ -232,31 +310,53 @@ class IAExpert(IA):
         pTest = self.deplacements(jr.x, jr.y, grille)
         xTest = jr.x - adv.x
         yTest = jr.y - adv.y
+        """
+            Position de l'adversaire par rapport au joueur
+        """
+        mmCol   = True if xTest==0 else False
+        mmLigne = True if yTest==0 else False
+        enHaut  = True if xTest>0 else False
+        enBas   = True if xTest<0 else False
+        aGauche = True if yTest>0 else False
+        aDroite = True if yTest<0 else False
         
         if len(pTest)>0:
-            if xTest==0:
-                if yTest>=1 and self.colVide(jr.x, adv.y+1, jr.y, grille):
+            unChoix = pTest[random.randint(0,len(pTest)-1)]
+            if mmCol==True:
+                if yTest==1 or (aGauche==True and self.colVide(jr.x, adv.y+1, jr.y, grille)==True):
                     dTest = random.randint(0,9)
 
                     if dTest==0:
                         if typeAct.DROITE in pTest:
                             return typeAct.DROITE
+                        elif typeAct.MONTE in pTest:
+                            return typeAct.MONTE
+                        elif typeAct.DESCENDS in pTest:
+                            return typeAct.DESCENDS
                         else:
-                            return pTest[random.randint(0,len(pTest)-1)]
+                            return unChoix
                     else:
                         dTest = random.randint(0,1)
                         if dTest==1:
                             if typeAct.MONTE in pTest:
                                 return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)]
+                                return unChoix
                         else:
                             if typeAct.DESCENDS in pTest:
                                 return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)] 
+                                return unChoix
                 
-                elif yTest>1 and self.colVide(jr.x, adv.y+1, jr.y, grille)==False:
+                elif aGauche==True and self.colVide(jr.x, adv.y+1, jr.y, grille)==False:
                     dTest = random.randint(0,9)
 
                     if dTest==0:
@@ -264,186 +364,304 @@ class IAExpert(IA):
                         if dTest==1:
                             if typeAct.MONTE in pTest:
                                 return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)]
+                                return unChoix
                         else:
                             if typeAct.DESCENDS in pTest:
                                 return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)]
+                                return unChoix
 
                     else:
                         if typeAct.DROITE in pTest:
                             return typeAct.DROITE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                
-                elif yTest<=-1 and self.colVide(jr.x, jr.y+1, adv.y, grille):
-                    dTest = random.randint(0,9)
-
-                    if dTest==0:
-                        if typeAct.GAUCHE in pTest:
-                            return typeAct.GAUCHE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    else:
-                        dTest = random.randint(0,1)
-                        if dTest==1:
-                            if typeAct.MONTE in pTest:
-                                return typeAct.MONTE
-                            else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                        else:
-                            if typeAct.DESCENDS in pTest:
-                                return typeAct.DESCENDS
-                            else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-
-                elif yTest<-1 and self.colVide(jr.x, jr.y+1, adv.y, grille)==False:
-                    dTest = random.randint(0,9)
-
-                    if dTest==0:
-                        dTest = random.randint(0,1)
-                        if dTest==1:
-                            if typeAct.MONTE in pTest:
-                                return typeAct.MONTE
-                            else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                        else:
-                            if typeAct.DESCENDS in pTest:
-                                return typeAct.DESCENDS
-                            else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                    else:
-                        if typeAct.GAUCHE in pTest:
-                            return typeAct.GAUCHE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-
-            elif yTest==0:
-                if xTest>=1 and self.ligVide(adv.x+1, jr.x, jr.y, grille):
-                    dTest = random.randint(0,9)
-
-                    if dTest==0:
-                        if typeAct.DESCENDS in pTest:
-                            return typeAct.DESCENDS
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    else:
-                        dTest = random.randint(0,1)
-                        if dTest==1:
-                            if typeAct.GAUCHE in pTest:
-                                return typeAct.GAUCHE
-                            else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                        else:
-                            if typeAct.DROITE in pTest:
-                                return typeAct.DROITE
-                            else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                
-                elif xTest>1 and self.ligVide(adv.x+1, jr.x, jr.y, grille)==False:
-                    dTest = random.randint(0,9)
-
-                    if dTest==0:
-                        dTest = random.randint(0,1)
-                        if dTest==1:
-                            if typeAct.GAUCHE in pTest:
-                                return typeAct.GAUCHE
-                            else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-                        else:
-                            if typeAct.DROITE in pTest:
-                                return typeAct.DROITE
-                            else:
-                                return pTest[random.randint(0,len(pTest)-1)]
-
-                    else:
-                        if typeAct.DESCENDS in pTest:
-                            return typeAct.DESCENDS
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                
-                elif xTest<=-1 and self.ligVide(jr.x+1, adv.x, jr.y, grille):
-                    dTest = random.randint(0,9)
-
-                    if dTest==0:
-                        if typeAct.MONTE in pTest:
+                        elif typeAct.MONTE in pTest:
                             return typeAct.MONTE
+                        elif typeAct.DESCENDS in pTest:
+                            return typeAct.DESCENDS
                         else:
-                            return pTest[random.randint(0,len(pTest)-1)]
+                            return unChoix
+                
+                elif yTest==-1 or (aDroite==True and self.colVide(jr.x, adv.y+1, jr.y, grille)==True):
+                    dTest = random.randint(0,9)
+
+                    if dTest==0:
+                        if typeAct.GAUCHE in pTest:
+                            return typeAct.GAUCHE
+                        elif typeAct.MONTE in pTest:
+                            return typeAct.MONTE
+                        elif typeAct.DESCENDS in pTest:
+                            return typeAct.DESCENDS
+                        else:
+                            return unChoix
                     else:
                         dTest = random.randint(0,1)
                         if dTest==1:
-                            if typeAct.GAUCHE in pTest:
+                            if typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.GAUCHE in pTest:
                                 return typeAct.GAUCHE
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)]
+                                return unChoix
                         else:
-                            if typeAct.DROITE in pTest:
-                                return typeAct.DROITE
+                            if typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
                             else:
-                                return pTest[random.randint(0,len(pTest)-1)]
+                                return unChoix
+                
+                elif aDroite==True and self.colVide(jr.x, jr.y+1, adv.y, grille)==False:
+                    dTest = random.randint(0,9)
 
-                elif xTest<-1 and self.ligVide(jr.x+1, adv.x, jr.y, grille)==False:
-                    dTest = random.randint(1,3)
-                    
-                    if dTest==1:
-                        if typeAct.DROITE in pTest:
+                    if dTest==0:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            else:
+                                return unChoix
+
+                    else:
+                        if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                        elif typeAct.MONTE in pTest:
+                            return typeAct.MONTE
+                        elif typeAct.DESCENDS in pTest:
+                            return typeAct.DESCENDS
+                        else:
+                            return unChoix
+
+            elif mmLigne==True:
+                if xTest==-1 or (enHaut==True and self.ligVide(adv.x+1, jr.x, jr.y, grille)==True):
+                    dTest = random.randint(0,9)
+
+                    if dTest==0:
+                        if typeAct.DESCENDS in pTest:
+                            return typeAct.DESCENDS
+                        elif typeAct.DROITE in pTest:
                             return typeAct.DROITE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    elif dTest==2:
-                        if typeAct.GAUCHE in pTest:
+                        elif typeAct.GAUCHE in pTest:
                             return typeAct.GAUCHE
                         else:
-                            return pTest[random.randint(0,len(pTest)-1)]
+                            return unChoix
                     else:
-                        if typeAct.MONTE in pTest:
-                            return typeAct.MONTE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-            else:
-                if xTest<0 and yTest<0:
-                    dTest = random.randint(0,1)
-                    if dTest==1:
-                        if typeAct.GAUCHE in pTest:
-                            return typeAct.GAUCHE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    else:
-                        if typeAct.MONTE in pTest:
-                            return typeAct.MONTE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    
-                elif yTest<0 and xTest>0:
-                    dTest = random.randint(1,2)
-                
-                    if dTest==1:
-                        if typeAct.GAUCHE in pTest:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.GAUCHE in pTest:
                                 return typeAct.GAUCHE
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    elif dTest==2:
-                        if typeAct.DESCENDS in pTest:
-                                return typeAct.DESCENDS
-                        else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                        
-                elif xTest>0 and yTest>0:
-                    dTest = random.randint(1,2)
-                
-                    if dTest==1:
-                        if typeAct.DROITE in pTest:
+                            elif typeAct.DROITE in pTest:
                                 return typeAct.DROITE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            else:
+                                return unChoix
                         else:
-                            return pTest[random.randint(0,len(pTest)-1)]
-                    elif dTest==2:
+                            if typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            else:
+                                return unChoix
+                
+                elif enHaut==True and self.ligVide(adv.x+1, jr.x, jr.y, grille)==False:
+                    dTest = random.randint(0,9)
+
+                    if dTest==0:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            else:
+                                return unChoix
+
+                    else:
                         if typeAct.DESCENDS in pTest:
                             return typeAct.DESCENDS
+                        elif typeAct.DROITE in pTest:
+                            return typeAct.DROITE
+                        elif typeAct.GAUCHE in pTest:
+                            return typeAct.GAUCHE
                         else:
-                            return pTest[random.randint(0,len(pTest)-1)]
+                            return unChoix
+                
+                elif xTest==1 or (enBas==True and self.ligVide(jr.x+1, adv.x, jr.y, grille)==True):
+                    dTest = random.randint(0,9)
+
+                    if dTest==0:
+                        if typeAct.MONTE in pTest:
+                            return typeAct.MONTE
+                        elif typeAct.DROITE in pTest:
+                            return typeAct.DROITE
+                        elif typeAct.GAUCHE in pTest:
+                            return typeAct.GAUCHE
+                        else:
+                            return unChoix
+                    else:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            else:
+                                return unChoix
+
+                elif enBas==True and self.ligVide(jr.x+1, adv.x, jr.y, grille)==False:
+                    dTest = random.randint(0,9)
+
+                    if dTest==0:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            else:
+                                return unChoix
+                    else:
+                        if typeAct.MONTE in pTest:
+                            return typeAct.MONTE
+                        elif typeAct.DROITE in pTest:
+                            return typeAct.DROITE
+                        elif typeAct.GAUCHE in pTest:
+                            return typeAct.GAUCHE
+                        else:
+                            return unChoix
+                            
+            elif enHaut==True and aGauche==True:
+                dTest = random.randint(0,1)
+                
+                if dTest==1:
+                    if typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    elif typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    else:
+                        return unChoix
+                else:
+                    if typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    elif typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    else:
+                        return unChoix
+            
+            elif enHaut==True and aDroite==True:
+                dTest = random.randint(0,1)
+                
+                if dTest==1:
+                    if typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    elif typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    else:
+                        return unChoix
+                else:
+                    if typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    elif typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    else:
+                        return unChoix
+
+            elif enBas==True and aGauche==True:
+                dTest = random.randint(0,1)
+                
+                if dTest==1:
+                    if typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    elif typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    else:
+                        return unChoix
+                else:
+                    if typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    elif typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    else:
+                        return unChoix
+
+            elif enBas==True and aDroite==True:
+                dTest = random.randint(0,1)
+                
+                if dTest==1:
+                    if typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    elif typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    else:
+                        return unChoix
+                else:
+                    if typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    elif typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    else:
+                        return unChoix
         else:
             return typeAct.AUTRE
 

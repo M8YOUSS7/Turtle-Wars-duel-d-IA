@@ -15,6 +15,7 @@ if __name__ == "__main__":
     ia2   = "expert"
     save  = False
     loop  = 1
+    archives = False
     
     """
         Récupération des args
@@ -31,15 +32,6 @@ if __name__ == "__main__":
                     print("Taille innapropriée :", sys.argv[i+1], "\nTaille doit être superieur à 1 !")
                     exit()
             
-            elif arg=="--help" or arg=="-h":
-                print("---Bienvenu sur Turtle Wars --- By Mahamt Youssouf : #yyouss@etud.univ-angers.fr---")
-                print("--size (-s) pour fixer la taille")
-                print("--debug (-d) pour utiliser le mode debug")
-                print("--aim1 (--aim2) pour speciffier quel IA dois utiliser le joueur 1(2)")
-                print("--save (-S) pour sauvegarder (la)les parties jouer")
-                print("--loop (-l) pour jouer plusieurs parties")
-                exit()
-            
             elif arg=="--aim1":
                 ia1 =sys.argv[i+1]
             
@@ -51,8 +43,25 @@ if __name__ == "__main__":
 
             elif arg=="--loop" or arg=="-l":
                 loop = int(sys.argv[i+1])
+
+            elif arg=="--arcv" or arg=="-a":
+                archives = True
+
+            elif arg=="--help" or arg=="-h":
+                print("---Bienvenu sur Turtle Wars --- By Mahamt Youssouf : #yyouss@etud.univ-angers.fr---")
+                print("--size (-s) pour fixer la taille")
+                print("--debug (-d) pour utiliser le mode debug")
+                print("--aim1 (--aim2) pour speciffier quel IA dois utiliser le joueur 1(2)")
+                print("--save (-S) pour sauvegarder (la)les parties jouer")
+                print("--loop (-l) pour jouer plusieurs parties")
+                print("--arcv (-a) pour consulter les parties sauvegardées")
+                exit()
                 
     monAr = Arn.Arene(size, ia1, ia2)
+
+    if archives==True:
+        monAr.archives()
+        exit()
 
     if debug==True:
         if save==True:
