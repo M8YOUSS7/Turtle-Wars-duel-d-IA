@@ -6,8 +6,6 @@ Created on Thu Apr  6 18:19:04 2023
 @author: yyouss
 """
 
-
-import os.path
 from joueur import *
 import random;
                 
@@ -17,9 +15,8 @@ class Arene:
         self.j1                                   = Joueur("j1", random.randint(0,t), random.randint(0,t), ia1)
         self.j2                                   = Joueur("j2", random.randint(0,t), random.randint(0,t), ia2)
         self.tailleGrille                         = tailleGrille
-        self.tour = random.randint(0, 1)
-
-        self.fileName = "./DATA/data{}".format(tailleGrille)
+        self.tour                                 = random.randint(0, 1)
+        self.gammes                               = []
                 
     def nouvellePartie(self):
         t                                         = self.tailleGrille-1
@@ -78,25 +75,15 @@ class Arene:
         winner = self.winner()
 
         print("--- Fin de jeu --- Big Winner - ",winner,"---")
-
+    
     def save(self):
-        if os.path.isfile(self.fileName+".npz")==False:
-            np.savez(self.fileName, a=self.j1.getPartieCourante()) if self.winner()==1 else np.savez(self.fileName, a=self.j2.getPartieCourante())
-        else:
-            forSave = np.load(self.fileName+".npz")
-            data = forSave['a'].tolist()
-            
-            if self.winner()==1:
-                for e in self.j1.getPartieCourante().tolist():
-                    data.append(e)
-            else:
-                for e in self.j2.getPartieCourante().tolist():
-                    data.append(e)
+        if self.winner()==1:
+            for e in self.j1.partieCourante:
+                self.gammes.append(e)
 
-            np.savez(self.fileName, a=data)
-            forSave.close()
-       
-    def archives(self):
-        if os.path.isfile(self.fileName+".npz")==True:
-            data = np.load(self.fileName+".npz")['a']
-            print(data)
+        else:
+            for e in self.j2.partieCourante:
+                self.gammes.append(e)
+
+    def getGammes(self):
+        return np.array(self.gammes)

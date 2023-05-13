@@ -7,6 +7,7 @@ Created on Wed Apr 12 17:48:15 2023
 """
 import sys
 import arene as Arn;
+import tools as tl;
 
 if __name__ == "__main__":
     debug = False
@@ -16,6 +17,8 @@ if __name__ == "__main__":
     save  = False
     loop  = 1
     archives = False
+    u4=False
+    u8=False
     
     """
         Récupération des args
@@ -46,6 +49,12 @@ if __name__ == "__main__":
 
             elif arg=="--arcv" or arg=="-a":
                 archives = True
+            
+            elif arg=="--unrool4" or arg=="-u4":
+                u4 = True
+                
+            elif arg=="--unrool8" or arg=="-u8":
+                u4 = True
 
             elif arg=="--help" or arg=="-h":
                 print("---Bienvenu sur Turtle Wars --- By Mahamt Youssouf : #yyouss@etud.univ-angers.fr---")
@@ -57,18 +66,25 @@ if __name__ == "__main__":
                 print("--arcv (-a) pour consulter les parties sauvegardées")
                 exit()
                 
-    monAr = Arn.Arene(size, ia1, ia2)
+    monAr    = Arn.Arene(size, ia1, ia2)
+    fileName = "./DATA/data{}".format(size)
 
     if archives==True:
-        monAr.archives()
+        tl.archives(fileName)
         exit()
 
     if debug==True:
         if save==True:
-            for i in range(loop):
-                monAr.nouvellePartie()
-                monAr.joueDebugIA()
-                monAr.save()
+            if u8==True:
+                loopUnRooling8(fileName, monAr, size)
+            elif u4==True:
+                loopUnRooling4(fileName, monAr, size)
+            else:
+                for i in range(loop):
+                    monAr.nouvellePartie()
+                    monAr.joueDebugIA()
+                    monAr.save()
+                    tl.save(fileName, monAr.getGammes())
 
             print("En",loop, "parties, J1 à gagnée", monAr.j1.points, " et J2 à gagnée", monAr.j2.points)
             
@@ -81,10 +97,17 @@ if __name__ == "__main__":
 
     else:
         if save==True:
-            for i in range(loop):
-                monAr.nouvellePartie()
-                monAr.joue()
-                monAr.save()
+            if u8==True:
+                loopUnRooling8(fileName, monAr, size)
+            elif u4==True:
+                loopUnRooling4(fileName, monAr, size)
+            else:
+                for i in range(loop):
+                    monAr.nouvellePartie()
+                    monAr.joue()
+                    monAr.save()
+                    tl.save(fileName, monAr.getGammes())
+
         else:
             for i in range(loop):
                 monAr.nouvellePartie()

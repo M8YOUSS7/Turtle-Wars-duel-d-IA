@@ -67,12 +67,11 @@ class Action:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
                     jr.gauche()
                     jr.endurance += (2 * jr.chargeTotal()) + 10
-
             else:
                 jr.endurance = 0
-
+                
         elif self.action==typeAct.TIRE:
-            if jr.tire(adv)!=True:
+            if jr.tire(adv)==False:
                 jr.endurance = 0
         else:
             jr.endurance = 0
