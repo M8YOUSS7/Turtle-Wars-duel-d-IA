@@ -1,5 +1,9 @@
 import os.path
+from os import mkdir
 import numpy as np
+
+if os.path.isdir('DATA')==False:
+        mkdir('DATA')
 
 def save(fileName, data):
         if os.path.isfile(fileName + '.npy')==False:

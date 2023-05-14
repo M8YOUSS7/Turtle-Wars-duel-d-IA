@@ -11,7 +11,7 @@ import tools as tl;
 
 if __name__ == "__main__":
     debug = False
-    size  = 5
+    size  = 9
     ia1   = "expert"
     ia2   = "expert"
     save  = False
