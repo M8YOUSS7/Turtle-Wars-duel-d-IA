@@ -43,12 +43,16 @@ class Arene:
         return self.j1.trt.vie==0 or self.j2.trt.vie==0
     
     def winner(self):
-        if self.j1.trt.vie>0:
-            return 1
-        elif self.j2.trt.vie>0:
+        if self.j1.trt.vie==0:
+            self.j1.trt.endurance=0
+            self.grille[self.j1.trt.x, self.j1.trt.y] = "V"
+            self.j2.points += 1
             return 2
-        
-        return 0
+        elif self.j2.trt.vie==0:
+            self.j2.trt.endurance=0
+            self.grille[self.j2.trt.x, self.j2.trt.y] = "V"
+            self.j1.points += 1
+            return 1
 
     def joue(self):
         while(self.gameOver()==False):
@@ -60,7 +64,9 @@ class Arene:
                 self.j2.joue(self.j1, self.grille)
                 self.tour -= 1
 
-    def joueDebugIA(self):
+        self.winner()
+
+    def joueDebug(self):
         self.j1.affiche("Debut de jeu", self.j2, self.grille, False)
 
         while(self.gameOver()==False):
@@ -77,11 +83,11 @@ class Arene:
         print("--- Fin de jeu --- Big Winner - ",winner,"---")
     
     def save(self):
-        if self.winner()==1:
+        if self.j2.trt.vie==0:
             for e in self.j1.partieCourante:
                 self.gammes.append(e)
 
-        else:
+        elif self.j1.trt.vie==0:
             for e in self.j2.partieCourante:
                 self.gammes.append(e)
 

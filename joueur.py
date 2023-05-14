@@ -60,7 +60,7 @@ class Joueur:
 
     def save(self, grille, act):
         grille.reshape(-1)
-        res =[self.trt.vie, self.trt.endurance, act.value]
+        res =["{}".format(self.trt.endurance), "{}".format(self.trt.vie), act.value]
         self.partieCourante.append(np.append(grille, res))
 
     def joue(self, adv, grille):
@@ -77,11 +77,6 @@ class Joueur:
             else:
                 adv.trt.endurance=100
                 
-        if adv.trt.vie==0:
-            adv.trt.endurance=0
-            grille[adv.trt.x, adv.trt.y] = "V"
-            self.points += 1
-
     def joueDebug(self, adv, grille):
         while adv.trt.vie>0 and self.trt.endurance>0:
             act                             = self.aim.prochainCoup(self.trt, adv.trt, grille)
@@ -97,11 +92,6 @@ class Joueur:
                 adv.trt.endurance=100
                 
             self.affiche("Etat du jeu", adv, grille)
-
-        if adv.trt.vie==0:
-            adv.trt.endurance=0
-            grille[adv.trt.x, adv.trt.y] = "V"
-            self.points += 1
 
     def nouvelleTortue(self, x, y):
         self.trt.iniTortue()

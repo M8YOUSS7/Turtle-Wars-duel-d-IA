@@ -50,10 +50,10 @@ if __name__ == "__main__":
             elif arg=="--arcv" or arg=="-a":
                 archives = True
             
-            elif arg=="--unrool4" or arg=="-u4":
+            elif arg=="--unrol4" or arg=="-u4":
                 u4 = True
                 
-            elif arg=="--unrool8" or arg=="-u8":
+            elif arg=="--unrol8" or arg=="-u8":
                 u4 = True
 
             elif arg=="--help" or arg=="-h":
@@ -64,6 +64,8 @@ if __name__ == "__main__":
                 print("--save (-S) pour sauvegarder (la)les parties jouer")
                 print("--loop (-l) pour jouer plusieurs parties")
                 print("--arcv (-a) pour consulter les parties sauvegardées")
+                print("--unrol4 (-u4) pour un depliage par de boucle 4")
+                print("--unrol8 (-u8) pour un depliage par boucle 8")
                 exit()
                 
     monAr    = Arn.Arene(size, ia1, ia2)
@@ -75,40 +77,50 @@ if __name__ == "__main__":
 
     if debug==True:
         if save==True:
-            if u8==True:
-                loopUnRooling8(fileName, monAr, size)
-            elif u4==True:
-                loopUnRooling4(fileName, monAr, size)
+            if u8==True and loop>=8:
+                tl.loopUnRooling8DebugSave(fileName, monAr, loop)
+            elif u4==True and loop>=4:
+                tl.loopUnRooling4DebugSave(fileName, monAr, loop)
             else:
                 for i in range(loop):
                     monAr.nouvellePartie()
-                    monAr.joueDebugIA()
+                    monAr.joueDebug()
                     monAr.save()
-                    tl.save(fileName, monAr.getGammes())
-
-            print("En",loop, "parties, J1 à gagnée", monAr.j1.points, " et J2 à gagnée", monAr.j2.points)
-            
+                
+                tl.save(fileName, monAr.getGammes())
+    
         else:
-            for i in range(loop):
-                monAr.nouvellePartie()
-                monAr.joueDebugIA()
+            if u8==True and loop>=8:
+                tl.loopUnRooling8Debug(fileName, monAr, loop)
+            elif u4==True and loop>=4:
+                tl.loopUnRooling4Debug(fileName, monAr, loop)
+            else:
+                for i in range(loop):
+                    monAr.nouvellePartie()
+                    monAr.joueDebug()
 
-            print("En",loop, "parties, J1 à gagnée", monAr.j1.points, " et J2 à gagnée", monAr.j2.points)
+        print("En",loop, "parties, J1 à gagnée", monAr.j1.points, " et J2 à gagnée", monAr.j2.points)
 
     else:
         if save==True:
-            if u8==True:
-                loopUnRooling8(fileName, monAr, size)
-            elif u4==True:
-                loopUnRooling4(fileName, monAr, size)
+            if u8==True and loop>=8:
+                tl.loopUnRooling8Save(fileName, monAr, loop)
+            elif u4==True and loop>=4:
+                tl.loopUnRooling4Save(fileName, monAr, loop)
             else:
                 for i in range(loop):
                     monAr.nouvellePartie()
                     monAr.joue()
                     monAr.save()
-                    tl.save(fileName, monAr.getGammes())
+                
+                tl.save(fileName, monAr.getGammes())
 
         else:
-            for i in range(loop):
-                monAr.nouvellePartie()
-                monAr.joue()
+            if u8==True and loop>=8:
+                tl.loopUnRooling8(fileName, monAr, loop)
+            elif u4==True and loop>=4:
+                tl.loopUnRooling4(fileName, monAr, loop)
+            else:
+                for i in range(loop):
+                    monAr.nouvellePartie()
+                    monAr.joue()
