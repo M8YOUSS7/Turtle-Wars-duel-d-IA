@@ -21,7 +21,7 @@ Lancer l'application avec pyhon3 main.py --help pour plus d'information.
 1)  Deep Learning
   1=> Sauvegarde des parties => done
   2=> Recuperations depuis la base de tous les données => done
-  3=> Apprendre
+  3=> perceptron => done
   
 2)Interface Graphique (Simple).
 3)IA: Monte Carlo.
