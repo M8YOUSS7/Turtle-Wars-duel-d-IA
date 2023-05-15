@@ -19,6 +19,10 @@ def archives(fileName):
                 arcv = np.load(fileName + '.npy')
                 print(arcv)
                 print("Taille de l'archive :", arcv.size)
+                return arcv
+        else:
+                return np.array([])
+                
 
 def loopUnRooling4Save(fileName, monAr, size):
         l = int(size/4)*4

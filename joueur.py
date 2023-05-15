@@ -20,10 +20,12 @@ class Joueur:
         #self.trt.ajtArm("AK-47", 5)
         #self.trt.ajtArm("M16", 3)
         
-        if ia=="expert":
+        if ia.lower()=="expert":
             self.aim = IAExpert()
             self.trt.ajtArm("M16", 3)
-            
+        elif ia.lower()=="perceptron":  
+            self.aim = IAPerceptron()
+            self.trt.ajtArm("M16", 3)
         else:
             self.aim = IA(ia)
 
@@ -31,8 +33,8 @@ class Joueur:
 
     def affiche(self, mes, adv, grille, det=True):
         t   = int(mt.sqrt(np.size(grille)))
-        jr  = grille[self.trt.x, self.trt.y]
-        ad  = grille[adv.trt.x, adv.trt.y]
+        jr  = int(grille[self.trt.x, self.trt.y])
+        ad  = int(grille[adv.trt.x, adv.trt.y])
 
         print("-----",mes,"-----")
 
@@ -63,7 +65,7 @@ class Joueur:
 
     def save(self, grille, act):
         grille.reshape(-1)
-        res =["{}".format(self.trt.endurance), "{}".format(self.trt.vie), act.value]
+        res =[self.trt.endurance, self.trt.vie, act.value]
         self.partieCourante.append(np.append(grille, res))
 
     def joue(self, adv, grille):

@@ -80,7 +80,7 @@ class Action:
     def execActDebug(self, jr, adv, grille):
         x =jr.x
         y =jr.y
-        ply = grille[x, y]
+        ply = int(grille[x, y])
 
         if self.action==typeAct.MONTE:
             if jr.monte()==True:

@@ -670,3 +670,53 @@ class IAExpert(IA):
             return self.sapprocher(jr, adv, grille)
         else:
             return self.seloigner(jr, adv, grille)
+
+import os.path
+from sklearn.linear_model import Perceptron
+
+class IAPerceptron(IA):
+    def __init__(self):
+        IA.__init__(self, "perceptron")
+
+        self.X =[]
+        self.y =[]
+
+        self.clf = clf = Perceptron(tol=1e-3, random_state=0)
+
+    def numToAct(self, num):
+            if num==1:
+                return typeAct.MONTE
+            elif num==2:
+                return typeAct.DESCENDS
+            elif num==3:
+                return typeAct.GAUCHE
+            elif num==4:
+                return typeAct.DROITE
+            elif num==5:
+                return typeAct.TIRE
+            else:
+                return typeAct.AUTRE
+
+    def prochainCoup(self, fileName, jr, adv, grille):
+        if os.path.isfile(fileName + '.npy')==True:
+            data = data = np.load(fileName + '.npy')
+            for e in data:
+                self.X.append(e[:-1])
+                self.y.append(e[-1])
+            
+            self.clf.fit(self.X, self.y)
+
+            aPredir                 = grille
+            #le cas ou le joeur 2 serai le perceptron
+            if aPredir[jr.x, jr.y]!=1:
+                aPredir[jr.x, jr.y]     = 1
+                aPredir[adv.x, adv.y]   = 2
+            aPredir                 = aPredir.reshape(-1)
+            aPredir                 = np.append(aPredir, [jr.endurance, jr.vie])
+
+            r = self.clf.predict([aPredir])
+
+            
+            return self.numToAct(r[0])
+        else:
+            return IA.prochainCoup(jr, adv, grille)
