@@ -25,9 +25,9 @@ class Action:
     def swap(self, x1, y1, x2, y2, grille):
         t   = mt.sqrt(np.size(grille))
         res = False
-        if (x2>=0) and (x2<t) and (y2>=0) and (y2<t) and (grille[x2, y2]=="V") and (grille[x1, y1]=="1" or grille[x1, y1]=="2"):
+        if (x2>=0) and (x2<t) and (y2>=0) and (y2<t) and (grille[x2, y2]==0) and (grille[x1, y1]==1 or grille[x1, y1]==2):
             val = grille[x1, y1]
-            grille[x1, y1] = "V"
+            grille[x1, y1] = 0
             grille[x2, y2] = val
             res = True
         

@@ -47,10 +47,13 @@ class Joueur:
         for i in range(t):
             print("| ", end="")
             for j in range(t):
-                if grille[i,j]!="V":
-                    print(grille[i,j], " ", sep="", end="")
-                else:
+                if grille[i,j]==0:
                     print("  ", end="")
+                elif grille[i,j]==3:
+                    print("* ", end="")
+                else:
+                    print(int(grille[i,j]), " ", sep="", end="")
+                    
             print(" |", end="")
             print("")
         
@@ -67,8 +70,8 @@ class Joueur:
         while adv.trt.vie>0 and self.trt.endurance>0:
             act                             = self.aim.prochainCoup(self.trt, adv.trt, grille)
             forSave                         = np.copy(grille)
-            forSave[self.trt.x, self.trt.y] = "J"
-            forSave[adv.trt.x, adv.trt.y]   = "A"
+            forSave[self.trt.x, self.trt.y] = 1
+            forSave[adv.trt.x, adv.trt.y]   = 2
             self.save(forSave, act)
             Action(act).execAct(self.trt, adv.trt, grille)
 
@@ -81,8 +84,8 @@ class Joueur:
         while adv.trt.vie>0 and self.trt.endurance>0:
             act                             = self.aim.prochainCoup(self.trt, adv.trt, grille)
             forSave                         = np.copy(grille)
-            forSave[self.trt.x, self.trt.y] = "J"
-            forSave[adv.trt.x, adv.trt.y]   = "A"
+            forSave[self.trt.x, self.trt.y] = 1
+            forSave[adv.trt.x, adv.trt.y]   = 2
             self.save(forSave, act)
             Action(act).execActDebug(self.trt, adv.trt, grille)
 

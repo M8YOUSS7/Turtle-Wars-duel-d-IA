@@ -20,24 +20,24 @@ class Arene:
                 
     def nouvellePartie(self):
         t                                         = self.tailleGrille-1
-        self.grille                               = np.full((self.tailleGrille, self.tailleGrille), "V")
+        self.grille                               = np.zeros((self.tailleGrille, self.tailleGrille))
         self.j1.nouvelleTortue(random.randint(0,t), random.randint(0,t))
         self.j2.nouvelleTortue(random.randint(0,t), random.randint(0,t))
         
-        self.grille[self.j1.trt.x, self.j1.trt.y]  = "1"
+        self.grille[self.j1.trt.x, self.j1.trt.y]  = 1
         
-        while self.grille[self.j2.trt.x, self.j2.trt.y] != "V":
+        while self.grille[self.j2.trt.x, self.j2.trt.y] != 0:
             self.j2.trt.setPos(random.randint(0,t), random.randint(0,t))
-        self.grille[self.j2.trt.x, self.j2.trt.y]  = "2"
+        self.grille[self.j2.trt.x, self.j2.trt.y]  = 2
         
         for i in range(self.tailleGrille):
             x = random.randint(0, t)
             y = random.randint(0, t)
 
-            while self.grille[x, y]!="V":
+            while self.grille[x, y]!=0:
                 x = random.randint(0, t)
                 y = random.randint(0, t)
-            self.grille[x, y] = "*"
+            self.grille[x, y] = 3
         
     def gameOver(self):
         return self.j1.trt.vie==0 or self.j2.trt.vie==0
@@ -45,12 +45,12 @@ class Arene:
     def winner(self):
         if self.j1.trt.vie==0:
             self.j1.trt.endurance=0
-            self.grille[self.j1.trt.x, self.j1.trt.y] = "V"
+            self.grille[self.j1.trt.x, self.j1.trt.y] = 0
             self.j2.points += 1
             return 2
         elif self.j2.trt.vie==0:
             self.j2.trt.endurance=0
-            self.grille[self.j2.trt.x, self.j2.trt.y] = "V"
+            self.grille[self.j2.trt.x, self.j2.trt.y] = 0
             self.j1.points += 1
             return 1
 

@@ -34,25 +34,25 @@ class IA:
         self.name = name
     
     def ligVide(self, x1, x2, y, grille):
-        return (grille[x1:x2, y]=="V").all()
+        return (grille[x1:x2, y]==0).all()
 
     def colVide(self, x, y1, y2, grille):
-        return (grille[x, y1:y2]=="V").all()
+        return (grille[x, y1:y2]==0).all()
 
     def deplacements(self, x, y, grille):
         res = []
         t   = mt.sqrt(np.size(grille))
 
-        if x-1 >=0 and grille[x-1,y] == "V":
+        if x-1 >=0 and grille[x-1,y] == 0:
             res.append(typeAct.MONTE)
         
-        if x+1 <t and grille[x+1,y] == "V":
+        if x+1 <t and grille[x+1,y] == 0:
             res.append(typeAct.DESCENDS)
         
-        if y-1 >=0 and grille[x,y-1] == "V":
+        if y-1 >=0 and grille[x,y-1] == 0:
             res.append(typeAct.GAUCHE)
         
-        if y+1 <t and grille[x,y+1] == "V":
+        if y+1 <t and grille[x,y+1] == 0:
             res.append(typeAct.DROITE)
 
         return res
