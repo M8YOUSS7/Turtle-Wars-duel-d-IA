@@ -10,29 +10,29 @@ from tortue import *
 from aim import *
 
 class Joueur:
-    def __init__(self, name, x, y, ia):
+    def __init__(self, name, x, y, ia, fileName =''):
         self.name   = name
         self.points = 0
         self.trt    = Tortue(x, y)
         
         if ia.lower()=="expert":
             self.aim = IAExpert()
-            self.trt.ajtArm("M16", 3)
-        elif ia.lower()=="perceptron":  
-            self.aim = IAPerceptron()
-            self.trt.ajtArm("M16", 3)
+            self.trt.ajtArm("AK-47", 5)
+        elif ia.lower()=="perceptron":
+            self.aim = IAPerceptron(fileName)
+            self.trt.ajtArm("AK-47", 5)
         elif ia.lower()=="armelegere":
             self.aim = IANaiveArmeLegere()
             self.trt.ajtArm("M16", 3)
         elif ia.lower()=="armelourde":
-            self.aim = IANaiveArmeLegere()
+            self.aim = IANaiveArmeLourde()
             self.trt.ajtArm("FN MAG", 13)
         elif ia.lower()=="manuelle":
             self.aim    = IAManelle()
             arm         = 0
 
             while(arm!=1 and arm!=2 and arm!=2 and arm!=3 and arm!=4 and arm!=5):
-                print('Les armes disponibles sont ', '1 : BROWING M2, Categorie 3.', '2 : FN MAG, Categorie 3.', '3 : AK-47, Categorie 2.', '4 : FAMAS, Categorie 1.', '5 : M16, Categorie 1.',  '**Par defaut le M16 vous es affecté.**', sep='\n')
+                print('Les armes disponibles sont ', '1 : BROWING M2, Categorie 3.', '2 : FN MAG, Categorie 3.', '3 : AK-47, Categorie 2.', '4 : FAMAS, Categorie 1.', '5 : M16, Categorie 1.',  '**Par defaut le AK-47 vous es affecté.**', sep='\n')
                 arm = int(input('Veillez saisir le code de l\'arme que vous voulez :'))
                 
                 if arm==1:
@@ -44,7 +44,7 @@ class Joueur:
                 elif arm==4:
                     self.trt.ajtArm("FAMAS", 4)
                 else:
-                    self.trt.ajtArm("M16", 3)
+                    self.trt.ajtArm("AK-47", 5)
                 
         else:
             self.aim = IA(ia)
@@ -52,7 +52,7 @@ class Joueur:
         self.partieCourante = []
 
     def affiche(self, mes, adv, grille, det=True):
-        t   = int(mt.sqrt(np.size(grille)))
+        t   = grille[0].size
         jr  = int(grille[self.trt.x, self.trt.y])
         ad  = int(grille[adv.trt.x, adv.trt.y])
 
@@ -97,8 +97,8 @@ class Joueur:
             self.save(forSave, act)
             Action(act).execAct(self.trt, adv.trt, grille)
 
-            if (adv.trt.endurance+10)<100:
-                adv.trt.endurance +=10
+            if (adv.trt.endurance+20)<100:
+                adv.trt.endurance +=20
             else:
                 adv.trt.endurance=100
                 
@@ -111,8 +111,8 @@ class Joueur:
             self.save(forSave, act)
             Action(act).execActDebug(self.trt, adv.trt, grille)
 
-            if (adv.trt.endurance+10)<100:
-                adv.trt.endurance +=10
+            if (adv.trt.endurance+20)<100:
+                adv.trt.endurance +=20
             else:
                 adv.trt.endurance=100
                 

@@ -68,8 +68,8 @@ if __name__ == "__main__":
                 print("--unrol8 (-u8) pour un depliage par boucle 8")
                 exit()
                 
-    monAr    = Arn.Arene(size, ia1, ia2)
     fileName = "./DATA/data{}".format(size)
+    monAr    = Arn.Arene(size, ia1, ia2, fileName)
 
     if archives==True:
         tl.archives(fileName)
@@ -99,7 +99,7 @@ if __name__ == "__main__":
                     monAr.nouvellePartie()
                     monAr.joueDebug()
 
-        print("En",loop, "parties, J1 à gagnée", monAr.j1.points, " et J2 à gagnée", monAr.j2.points)
+        print("En ",loop, " parties, ", monAr.j1.aim.name, " à gagnée ", monAr.j1.points, " et ", monAr.j2.aim.name, " à gagnée ", monAr.j2.points, sep="")
 
     else:
         if save==True:

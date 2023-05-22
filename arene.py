@@ -10,10 +10,10 @@ from joueur import *
 import random;
                 
 class Arene:
-    def __init__(self, tailleGrille, ia1, ia2):
+    def __init__(self, tailleGrille, ia1, ia2, fileName =''):
         t                                         = tailleGrille-1
-        self.j1                                   = Joueur("j1", random.randint(0,t), random.randint(0,t), ia1)
-        self.j2                                   = Joueur("j2", random.randint(0,t), random.randint(0,t), ia2)
+        self.j1                                   = Joueur("j1", random.randint(0,t), random.randint(0,t), ia1, fileName)
+        self.j2                                   = Joueur("j2", random.randint(0,t), random.randint(0,t), ia2, fileName)
         self.tailleGrille                         = tailleGrille
         self.tour                                 = random.randint(0, 1)
         self.gammes                               = []

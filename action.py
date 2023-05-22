@@ -8,7 +8,6 @@ Created on Thu Apr  6 18:19:04 2023
 
 import numpy as np;
 from enum import Enum;
-import math as mt;
 
 class typeAct(Enum):
     AUTRE    = 0
@@ -23,7 +22,7 @@ class Action:
         self.action = act
 
     def swap(self, x1, y1, x2, y2, grille):
-        t   = mt.sqrt(np.size(grille))
+        t   = grille[0].size
         res = False
         if (x2>=0) and (x2<t) and (y2>=0) and (y2<t) and (grille[x2, y2]==0) and (grille[x1, y1]==1 or grille[x1, y1]==2):
             val = grille[x1, y1]
@@ -41,32 +40,32 @@ class Action:
         if self.action==typeAct.MONTE:
             if jr.monte()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
-                    jr.descends()
                     jr.endurance += (2 * jr.chargeTotal()) + 10
+                    jr.descends()
             else:
                 jr.endurance = 0
                 
         elif self.action==typeAct.DESCENDS:
             if jr.descends()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
-                    jr.monte()
                     jr.endurance += (2 * jr.chargeTotal()) + 10
+                    jr.monte()
             else:
                 jr.endurance = 0
                 
         elif self.action==typeAct.GAUCHE:
             if jr.gauche()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
-                    jr.droite()
                     jr.endurance += (2 * jr.chargeTotal()) + 10
+                    jr.droite()
             else:
                 jr.endurance = 0
 
         elif self.action==typeAct.DROITE:
             if jr.droite()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
-                    jr.gauche()
                     jr.endurance += (2 * jr.chargeTotal()) + 10
+                    jr.gauche()
             else:
                 jr.endurance = 0
                 
@@ -85,9 +84,9 @@ class Action:
         if self.action==typeAct.MONTE:
             if jr.monte()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
-                    jr.descends()
-                    jr.endurance += (2 * jr.chargeTotal()) + 10
                     print("J", ply, " impossible de MONTE", sep="")
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+                    jr.descends()
                 else:
                     print("J", ply, " MONTE : (",x,",",y,") => (",jr.x,",",jr.y,")", sep="")
             else:
@@ -96,9 +95,9 @@ class Action:
         elif self.action==typeAct.DESCENDS:
             if jr.descends()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
-                    jr.monte()
-                    jr.endurance += (2 * jr.chargeTotal()) + 10
                     print("J", ply, " impossible de DESCENDRE", sep="")
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+                    jr.monte()
                 else:
                     print("J", ply, " DESCENDS : (",x,",",y,") => (",jr.x,",",jr.y,")", sep="")
             else:
@@ -107,9 +106,9 @@ class Action:
         elif self.action==typeAct.GAUCHE:
             if jr.gauche()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
-                    jr.droite()
-                    jr.endurance += (2 * jr.chargeTotal()) + 10
                     print("J", ply, " impossible d'aller à GAUCHE", sep="")
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+                    jr.droite()
                 else:
                     print("J", ply, " GAUCHE : (",x,",",y,") => (",jr.x,",",jr.y,")", sep="")
             else:
@@ -118,9 +117,9 @@ class Action:
         elif self.action==typeAct.DROITE:
             if jr.droite()==True:
                 if self.swap(x, y, jr.x, jr.y, grille)==False:
-                    jr.gauche()
-                    jr.endurance += (2 * jr.chargeTotal()) + 10
                     print("J", ply, " impossible d'aller à DROITE", sep="")
+                    jr.endurance += (2 * jr.chargeTotal()) + 10
+                    jr.gauche()
                 else:
                     print("J", ply, " DROITE : (",x,",",y,") => (",jr.x,",",jr.y,")", sep="")
             else:

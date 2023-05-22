@@ -6,6 +6,8 @@ Created on Fri Apr 14 18:58:57 2023
 """
 import random;
 from action import *
+import os.path
+from sklearn.linear_model import Perceptron
 
 class IA:
     def __init__(self, name):
@@ -19,7 +21,7 @@ class IA:
 
     def deplacements(self, x, y, grille):
         res = []
-        t   = mt.sqrt(np.size(grille))
+        t   = grille[0].size
 
         if x-1 >=0 and grille[x-1,y] == 0:
             res.append(typeAct.MONTE)
@@ -42,7 +44,7 @@ class IA:
 
 class IAExpert(IA):
     def __init__(self):
-        IA.__init__(self, "expert")
+        IA.__init__(self, "Expert")
 
     def sapprocher(self, jr, adv, grille):
         pTest = self.deplacements(jr.x, jr.y, grille)
@@ -648,20 +650,24 @@ class IAExpert(IA):
         else:
             return self.seloigner(jr, adv, grille)
 
-import os.path
-from sklearn.linear_model import Perceptron
-
-
-
-
 class IAPerceptron(IA):
-    def __init__(self):
+    def __init__(self, fileName):
         IA.__init__(self, "perceptron")
+        if os.path.isfile(fileName + '.npy')==True:
+            self.X =[]
+            self.y =[]
+            data = data = np.load(fileName + '.npy')
+            for e in data:
+                self.X.append(e[:-1])
+                self.y.append(e[-1])
+            
+            self.clf = clf = Perceptron(tol=1e-3, random_state=0, max_iter=10000)
+            self.clf.fit(self.X, self.y)
+            self.bienForme = True
 
-        self.X =[]
-        self.y =[]
-
-        self.clf = clf = Perceptron(tol=1e-3, random_state=0)
+        else:
+            self.bienForme = False
+        
 
     def numToAct(self, num):
             if num==1:
@@ -677,16 +683,11 @@ class IAPerceptron(IA):
             else:
                 return typeAct.AUTRE
 
-    def prochainCoup(self, fileName, jr, adv, grille):
-        if os.path.isfile(fileName + '.npy')==True:
-            data = data = np.load(fileName + '.npy')
-            for e in data:
-                self.X.append(e[:-1])
-                self.y.append(e[-1])
-            
-            self.clf.fit(self.X, self.y)
+    def prochainCoup(self, jr, adv, grille):
+        pTest = self.deplacements(jr.x, jr.y, grille)
 
-            aPredir                 = grille
+        if self.bienForme == True and len(pTest)>0:
+            aPredir                 = grille.copy()
             #le cas ou le joeur 2 serai le perceptron
             if aPredir[jr.x, jr.y]!=1:
                 aPredir[jr.x, jr.y]     = 1
@@ -696,11 +697,13 @@ class IAPerceptron(IA):
 
             r = self.clf.predict([aPredir])
 
-            
             return self.numToAct(r[0])
-        else:
-            return IA.prochainCoup(jr, adv, grille)
-
+        
+        elif bienForme==False:
+            return pTest[random.randint(0,len(pTest)-1)]
+        
+        return typeAct.AUTRE
+        
 class IANaiveArmeLegere(IA):
     def __init__(self):
         IA.__init__(self, "IA Naive Arme Legère")
@@ -873,25 +876,88 @@ class IANaiveArmeLegere(IA):
                             else:
                                 return unChoix
 
-            elif xTestAbs > yTestAbs:
-                if enBas==True and typeAct.DESCENDS in pTest:
-                    return typeAct.DESCENDS
+            elif xTestAbs >= yTestAbs:
+                if enBas==True:
+                    if typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    else:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            else:
+                                return unChoix
 
-                elif enHaut==True and typeAct.MONTE in pTest:
-                    return typeAct.MONTE
-
-                else:
-                    return unChoix
-
+                elif enHaut==True:
+                    if typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    else:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            else:
+                                return unChoix
+                        
             elif xTestAbs < yTestAbs:
-                if aGauche==True and typeAct.GAUCHE in pTest:
-                    return typeAct.GAUCHE
-
-                elif aDroite==True and typeAct.DROITE in pTest:
-                    return typeAct.DROITE
+                if aGauche==True:
+                    if typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    else:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            else:
+                                return unChoix
                     
-                else:
-                    return unChoix
+                elif aDroite==True:
+                    if typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    else:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            else:
+                                return unChoix
+
         else:
             return typeAct.AUTRE
 
@@ -996,7 +1062,7 @@ class IANaiveArmeLegere(IA):
                     else:
                         return unChoix
                             
-            elif xTestAbs > yTestAbs:
+            elif xTestAbs >= yTestAbs:
                 if enBas==True:
                     if typeAct.GAUCHE in pTest:
                         return typeAct.GAUCHE
@@ -1042,7 +1108,7 @@ class IANaiveArmeLegere(IA):
             return typeAct.AUTRE
 
     def prochainCoup(self, jr, adv, grille):
-        if jr.endurance>11:
+        if jr.endurance>=15:
             return self.sapprocher(jr, adv, grille)
         else:
             return self.seloigner(jr, adv, grille)
@@ -1219,25 +1285,87 @@ class IANaiveArmeLourde(IA):
                             else:
                                 return unChoix
 
-            elif xTestAbs > yTestAbs:
-                if aGauche==True and typeAct.GAUCHE in pTest:
-                    return typeAct.GAUCHE
-
-                elif aDroite==True and typeAct.DROITE in pTest:
-                    return typeAct.DROITE
+            elif xTestAbs >= yTestAbs:
+                if aGauche==True:
+                    if typeAct.GAUCHE in pTest:
+                        return typeAct.GAUCHE
+                    else:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            else:
+                                return unChoix
                     
-                else:
-                    return unChoix
-
+                elif aDroite==True:
+                    if typeAct.DROITE in pTest:
+                        return typeAct.DROITE
+                    else:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            elif typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.DESCENDS in pTest:
+                                return typeAct.DESCENDS
+                            elif typeAct.MONTE in pTest:
+                                return typeAct.MONTE
+                            else:
+                                return unChoix
+                        
             elif xTestAbs < yTestAbs:
-                if enBas==True and typeAct.DESCENDS in pTest:
-                    return typeAct.DESCENDS
+                if enBas==True:
+                    if typeAct.DESCENDS in pTest:
+                        return typeAct.DESCENDS
+                    else:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            else:
+                                return unChoix
 
-                elif enHaut==True and typeAct.MONTE in pTest:
-                    return typeAct.MONTE
-
-                else:
-                    return unChoix
+                elif enHaut==True:
+                    if typeAct.MONTE in pTest:
+                        return typeAct.MONTE
+                    else:
+                        dTest = random.randint(0,1)
+                        if dTest==1:
+                            if typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            elif typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            else:
+                                return unChoix
+                        else:
+                            if typeAct.GAUCHE in pTest:
+                                return typeAct.GAUCHE
+                            elif typeAct.DROITE in pTest:
+                                return typeAct.DROITE
+                            else:
+                                return unChoix
 
         else:
             return typeAct.AUTRE
@@ -1343,7 +1471,7 @@ class IANaiveArmeLourde(IA):
                     else:
                         return unChoix
                             
-            elif xTestAbs > yTestAbs:
+            elif xTestAbs >= yTestAbs:
                 if enBas==True:
                     if typeAct.GAUCHE in pTest:
                         return typeAct.GAUCHE
@@ -1389,7 +1517,7 @@ class IANaiveArmeLourde(IA):
             return typeAct.AUTRE
 
     def prochainCoup(self, jr, adv, grille):
-        if jr.endurance>32:
+        if jr.endurance>=25:
             return self.sapprocher(jr, adv, grille)
         else:
             return self.seloigner(jr, adv, grille)
@@ -1401,23 +1529,29 @@ class IAManelle(IA):
         IA.__init__(self, nom)
 
     def prochainCoup(self, jr, adv, grille):
-        cp=0
-        while(cp!=1 and cp!=2 and cp!=2 and cp!=3 and cp!=4 and cp!=5):
-            print("Entrée : ", "1 : pour Monter", "2 : pour Descendre", "3 : pour aller à Gauche", "4 : pour aller à Droite", "5 : pour Tirée", "-1 pour avoir une indice", sep="\n")
-            cp = int(input(""))
+        pTest   = self.deplacements(jr.x, jr.y, grille)
+        cp      = 0
+        if(len(pTest)>0):
+            while(cp!=1 and cp!=2 and cp!=2 and cp!=3 and cp!=4 and cp!=5):
+                print("Entrée : ", "1 : pour Monter", "2 : pour Descendre", "3 : pour aller à Gauche", "4 : pour aller à Droite", "5 : pour Tirée", "-1 pour avoir une indice", sep="\n")
+                cp = int(input(""))
 
-            if cp==1:
-                return typeAct.MONTE
-            elif cp==2:
-                return typeAct.DESCENDS
-            elif cp==3:
-                return typeAct.GAUCHE
-            elif cp==4:
-                return typeAct.DROITE
-            elif cp==5:
-                return typeAct.TIRE
-            elif cp==-1:
-                for d in self.deplacements(jr.x, jr.y, grille):
-                    print(d)
-            else:
-                print("Coup invalid reessayer !")
+                if cp==1:
+                    return typeAct.MONTE
+                elif cp==2:
+                    return typeAct.DESCENDS
+                elif cp==3:
+                    return typeAct.GAUCHE
+                elif cp==4:
+                    return typeAct.DROITE
+                elif cp==5:
+                    return typeAct.TIRE
+                elif cp==-1:
+                    print("***********************", "Vous pouvez : ", sep="\n")
+                    for d in self.deplacements(jr.x, jr.y, grille):
+                        print(d.name)
+                    print("***********************")
+                else:
+                    print("Coup invalid reessayer !")
+        else:
+            return typeAct.AUTRE
