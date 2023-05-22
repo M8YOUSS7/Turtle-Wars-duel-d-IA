@@ -23,9 +23,9 @@ class Tortue:
         self.x = x
         self.y = y
 
-    def iniTortue(self):
-        self.x =0
-        self.y =0
+    def iniTortue(self, x, y):
+        self.x =x
+        self.y =y
         self.vie = 100
         self.endurance = 100
      

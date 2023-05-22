@@ -17,7 +17,32 @@ class Arene:
         self.tailleGrille                         = tailleGrille
         self.tour                                 = random.randint(0, 1)
         self.gammes                               = []
+
+    def parcours(self, x, y, dejaVu):
+        if x<0 or x>=self.tailleGrille or y<0 or y>=self.tailleGrille or self.grille[x][y]==3 or (x,y) in dejaVu:
+            return []
+        else:
+            dejaVu.append((x, y))
+            
+            for z in self.parcours(x+1, y, dejaVu):
+                if z not in dejaVu:
+                    dejaVu.append(z)
+            
+            for z in self.parcours(x-1, y, dejaVu):
+                if z not in dejaVu:
+                    dejaVu.append(z)
+
+            for z in self.parcours(x, y+1, dejaVu):
+                if z not in dejaVu:
+                    dejaVu.append(z)
                 
+            for z in self.parcours(x, y-1, dejaVu):
+                if z not in dejaVu:
+                    dejaVu.append(z)
+
+            return dejaVu
+
+
     def nouvellePartie(self):
         t                                         = self.tailleGrille-1
         self.grille                               = np.zeros((self.tailleGrille, self.tailleGrille))
@@ -38,6 +63,13 @@ class Arene:
                 x = random.randint(0, t)
                 y = random.randint(0, t)
             self.grille[x, y] = 3
+        
+        while self.grille[x, y]==3:
+                x = random.randint(0, t)
+                y = random.randint(0, t)
+
+        while len(self.parcours(x, y, [])) != (self.grille.size - self.tailleGrille):
+            self.nouvellePartie()
         
     def gameOver(self):
         return self.j1.trt.vie==0 or self.j2.trt.vie==0

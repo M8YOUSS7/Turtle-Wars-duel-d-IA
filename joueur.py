@@ -86,7 +86,8 @@ class Joueur:
     def save(self, grille, act):
         grille.reshape(-1)
         res =[self.trt.endurance, self.trt.vie, act.value]
-        self.partieCourante.append(np.append(grille, res))
+        if res not in self.partieCourante:
+            self.partieCourante.append(np.append(grille, res))
 
     def joue(self, adv, grille):
         while adv.trt.vie>0 and self.trt.endurance>0:
@@ -119,6 +120,5 @@ class Joueur:
             self.affiche("Etat du jeu", adv, grille)
 
     def nouvelleTortue(self, x, y):
-        self.trt.iniTortue()
-        self.trt.setPos(x, y)
+        self.trt.iniTortue(x, y)
         self.partieCourante = []

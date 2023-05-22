@@ -683,17 +683,19 @@ class IAPerceptron(IA):
             else:
                 return typeAct.AUTRE
 
+    def getState(self, jr, adv, grille):
+        aPredir = grille.copy()
+        if aPredir[jr.x, jr.y]!=1:
+            aPredir[jr.x, jr.y]     = 1
+            aPredir[adv.x, adv.y]   = 2
+        aPredir                 = aPredir.reshape(-1)
+        return np.append(aPredir, [jr.endurance, jr.vie])
+
     def prochainCoup(self, jr, adv, grille):
         pTest = self.deplacements(jr.x, jr.y, grille)
 
         if self.bienForme == True and len(pTest)>0:
-            aPredir                 = grille.copy()
-            #le cas ou le joeur 2 serai le perceptron
-            if aPredir[jr.x, jr.y]!=1:
-                aPredir[jr.x, jr.y]     = 1
-                aPredir[adv.x, adv.y]   = 2
-            aPredir                 = aPredir.reshape(-1)
-            aPredir                 = np.append(aPredir, [jr.endurance, jr.vie])
+            aPredir = self.getState(jr, adv, grille)             
 
             r = self.clf.predict([aPredir])
 
