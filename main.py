@@ -60,7 +60,7 @@ if __name__ == "__main__":
                 print("---Bienvenu sur Turtle Wars --- By Mahamt Youssouf : #yyouss@etud.univ-angers.fr---")
                 print("--size (-s) pour fixer la taille")
                 print("--debug (-d) pour utiliser le mode debug")
-                print("--aim1 (--aim2) pour speciffier quel IA dois utiliser le joueur 1(2)")
+                print("--aim1 (--aim2) pour speciffier quel IA dois utiliser le joueur 1(2).", "Utilser uen des IA implemnter suivants : Expert, Perceptron, ArmeLegere, ArmeLourde, Manuelle.", sep="\n")
                 print("--save (-S) pour sauvegarder (la)les parties jouer")
                 print("--loop (-l) pour jouer plusieurs parties")
                 print("--arcv (-a) pour consulter les parties sauvegardées")

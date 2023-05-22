@@ -14,11 +14,6 @@ class Joueur:
         self.name   = name
         self.points = 0
         self.trt    = Tortue(x, y)
-        #self.trt.ajtArm("FAMAS", 4)
-        #self.trt.ajtArm("BROWING M2", 72)
-        #self.trt.ajtArm("FN MAG", 13)
-        #self.trt.ajtArm("AK-47", 5)
-        #self.trt.ajtArm("M16", 3)
         
         if ia.lower()=="expert":
             self.aim = IAExpert()
@@ -26,6 +21,31 @@ class Joueur:
         elif ia.lower()=="perceptron":  
             self.aim = IAPerceptron()
             self.trt.ajtArm("M16", 3)
+        elif ia.lower()=="armelegere":
+            self.aim = IANaiveArmeLegere()
+            self.trt.ajtArm("M16", 3)
+        elif ia.lower()=="armelourde":
+            self.aim = IANaiveArmeLegere()
+            self.trt.ajtArm("FN MAG", 13)
+        elif ia.lower()=="manuelle":
+            self.aim    = IAManelle()
+            arm         = 0
+
+            while(arm!=1 and arm!=2 and arm!=2 and arm!=3 and arm!=4 and arm!=5):
+                print('Les armes disponibles sont ', '1 : BROWING M2, Categorie 3.', '2 : FN MAG, Categorie 3.', '3 : AK-47, Categorie 2.', '4 : FAMAS, Categorie 1.', '5 : M16, Categorie 1.',  '**Par defaut le M16 vous es affecté.**', sep='\n')
+                arm = int(input('Veillez saisir le code de l\'arme que vous voulez :'))
+                
+                if arm==1:
+                    self.trt.ajtArm("BROWING M2", 72)
+                elif arm==2:
+                    self.trt.ajtArm("FN MAG", 13)
+                elif arm==3:
+                    self.trt.ajtArm("AK-47", 5)
+                elif arm==4:
+                    self.trt.ajtArm("FAMAS", 4)
+                else:
+                    self.trt.ajtArm("M16", 3)
+                
         else:
             self.aim = IA(ia)
 
