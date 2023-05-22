@@ -1,7 +1,7 @@
 # Turtle-Wars-duel-d-IA
 
 # Done :
-
+IA['Perceptron', 'Expert', 'NaiveArmeLourd', 'NaiveArmeLegere', 'Manuelle']
 Class['Turtle Wars']= [arme, tortue, joueur, obstacle, action, arene]
 
 Une arene es constitué d'une grille d'emplacements des éléments et de deux joueurs. Dans la grille 0 désigne la case vide et 1 ou  2 designe une tortue(joueur) et  3 represente n'importe quel obstacle.
@@ -32,5 +32,5 @@ Lancer l'application avec pyhon3 main.py --help pour plus d'information.
   3=> perceptron => done
   4=> resaux de neuronne
   
-2)Interface Graphique (Simple).
+2)Interface Graphique (Simple) done.
 3)IA: Monte Carlo.
