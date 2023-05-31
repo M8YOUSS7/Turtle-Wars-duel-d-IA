@@ -59,8 +59,8 @@ class Joueur:
         print("-----",mes,"-----")
 
         if det==True:
-            print("----- J", jr," -----", "Endurence :", self.trt.endurance, ", Vie :", self.trt.vie, ", Points :", self.points, sep="")
-            print("----- J", ad," -----", "Endurence :", adv.trt.endurance, ", Vie :", adv.trt.vie, ", Points :", adv.points, sep="")
+            print("----- J", jr," -----", "Endurance :", self.trt.endurance, ", Vie :", self.trt.vie, ", Points :", self.points, sep="")
+            print("----- J", ad," -----", "Endurance :", adv.trt.endurance, ", Vie :", adv.trt.vie, ", Points :", adv.points, sep="")
 
         for j in range(t):
             print ("--", end="")
@@ -117,7 +117,7 @@ class Joueur:
             else:
                 adv.trt.endurance=100
                 
-            self.affiche("Etat du jeu", adv, grille)
+            self.affiche("État du jeu", adv, grille)
 
     def nouvelleTortue(self, x, y):
         self.trt.iniTortue(x, y)

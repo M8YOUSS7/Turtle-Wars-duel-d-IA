@@ -29,11 +29,10 @@ if __name__ == "__main__":
                 debug = True
             
             elif arg=="--size" or arg=="-s":
-                if int(sys.argv[i+1])>1:
-                    size = int(sys.argv[i+1])
-                else:
-                    print("Taille innapropriée :", sys.argv[i+1], "\nTaille doit être superieur à 1 !")
-                    exit()
+                size = int(sys.argv[i+1])
+                while size<=1:
+                    print("Taille innapropriée :", size)
+                    size = int(input("Entrez une taille supérieur à 1\n"))
             
             elif arg=="--aim1":
                 ia1 =sys.argv[i+1]

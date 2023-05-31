@@ -39,7 +39,26 @@ class IA:
 
     def prochainCoup(self, jr, adv, grille):
         pTest = self.deplacements(jr.x, jr.y, grille)
-
+        pTest = self.deplacements(jr.x, jr.y, grille)
+        xTest = jr.x - adv.x
+        yTest = jr.y - adv.y
+        """
+            Position de l'adversaire par rapport au joueur
+        """
+        mmCol   = True if xTest==0 else False
+        mmLigne = True if yTest==0 else False
+        enHaut  = True if xTest>0 else False
+        enBas   = True if xTest<0 else False
+        aGauche = True if yTest>0 else False
+        aDroite = True if yTest<0 else False
+        
+        if mmCol==True:
+            if yTest==1 or yTest==-1 or (aGauche==True and self.colVide(jr.x, adv.y+1, jr.y, grille)==True) or (aDroite==True and self.colVide(jr.x, jr.y+1, adv.y, grille)==True):
+                return typeAct.TIRE
+        elif mmLigne==True:
+            if xTest==1 or xTest==-1 or (enHaut==True and self.ligVide(adv.x+1, jr.x, jr.y, grille)==True) or (enBas==True and self.ligVide(jr.x+1, adv.x, jr.y, grille)==True):
+                return typeAct.TIRE
+        
         return pTest[random.randint(0,len(pTest)-1)]
 
 class IAExpert(IA):
@@ -283,6 +302,8 @@ class IAExpert(IA):
                         return unChoix
 
         else:
+            if (mmCol==True and (yTest==1 or yTest==-1)) or (mmLigne==True and (xTest==1 or xTest==-1)):
+                return typeAct.TIRE
             return typeAct.AUTRE
 
     def seloigner(self, jr, adv, grille):
@@ -642,6 +663,8 @@ class IAExpert(IA):
                     else:
                         return unChoix
         else:
+            if (mmCol==True and (yTest==1 or yTest==-1)) or (mmLigne==True and (xTest==1 or xTest==-1)):
+                return typeAct.TIRE
             return typeAct.AUTRE
 
     def prochainCoup(self, jr, adv, grille):
@@ -961,6 +984,8 @@ class IANaiveArmeLegere(IA):
                                 return unChoix
 
         else:
+            if (mmCol==True and (yTest==1 or yTest==-1)) or (mmLigne==True and (xTest==1 or xTest==-1)):
+                return typeAct.TIRE
             return typeAct.AUTRE
 
     def seloigner(self, jr, adv, grille):
@@ -1107,6 +1132,8 @@ class IANaiveArmeLegere(IA):
                         return unChoix
 
         else:
+            if (mmCol==True and (yTest==1 or yTest==-1)) or (mmLigne==True and (xTest==1 or xTest==-1)):
+                return typeAct.TIRE
             return typeAct.AUTRE
 
     def prochainCoup(self, jr, adv, grille):
@@ -1370,6 +1397,8 @@ class IANaiveArmeLourde(IA):
                                 return unChoix
 
         else:
+            if (mmCol==True and (yTest==1 or yTest==-1)) or (mmLigne==True and (xTest==1 or xTest==-1)):
+                return typeAct.TIRE
             return typeAct.AUTRE
 
     def seloigner(self, jr, adv, grille):
@@ -1516,6 +1545,8 @@ class IANaiveArmeLourde(IA):
                         return unChoix
 
         else:
+            if (mmCol==True and (yTest==1 or yTest==-1)) or (mmLigne==True and (xTest==1 or xTest==-1)):
+                return typeAct.TIRE
             return typeAct.AUTRE
 
     def prochainCoup(self, jr, adv, grille):
@@ -1556,4 +1587,9 @@ class IAManelle(IA):
                 else:
                     print("Coup invalid reessayer !")
         else:
-            return typeAct.AUTRE
+            if (mmCol==True and (yTest==1 or yTest==-1)) or (mmLigne==True and (xTest==1 or xTest==-1)):
+                tirer = bool(input("Entrez 1 pour tiré ou tout nombre plus different de 0 ou entrez 0 pour abandonnez."))
+                if tirer==True: 
+                    return typeAct.TIRE
+                
+                return typeAct.AUTRE
