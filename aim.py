@@ -715,7 +715,7 @@ class IAPerceptron(IA):
         return np.append(aPredir, [jr.endurance, jr.vie])
 
     def prochainCoup(self, jr, adv, grille):
-        if self.bienForme == True and len(pTest)>0:
+        if self.bienForme == True:
             aPredir = self.getState(jr, adv, grille)             
 
             r = self.clf.predict([aPredir])
