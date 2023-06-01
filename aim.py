@@ -715,8 +715,6 @@ class IAPerceptron(IA):
         return np.append(aPredir, [jr.endurance, jr.vie])
 
     def prochainCoup(self, jr, adv, grille):
-        pTest = self.deplacements(jr.x, jr.y, grille)
-
         if self.bienForme == True and len(pTest)>0:
             aPredir = self.getState(jr, adv, grille)             
 
@@ -724,8 +722,8 @@ class IAPerceptron(IA):
 
             return self.numToAct(r[0])
         
-        elif bienForme==False:
-            return pTest[random.randint(0,len(pTest)-1)]
+        elif self.bienForme==False:
+            return IA.prochainCoup(self, jr, adv, grille)
         
         return typeAct.AUTRE
         

@@ -9,6 +9,41 @@ import sys
 import arene as Arn;
 import tools as tl;
 
+def tournois(config, nbParties, fileName):
+    arene1 = Arn.Arene(config, "expert", "expert", fileName)
+    arene2 = Arn.Arene(config, "expert", "perceptron", fileName)
+    arene3 = Arn.Arene(config, "expert", "armelegere", fileName)
+    arene4 = Arn.Arene(config, "expert", "armelourde", fileName)
+    arene5 = Arn.Arene(config, "perceptron", "perceptron", fileName)
+    arene6 = Arn.Arene(config, "perceptron", "armelegere", fileName)
+    arene7 = Arn.Arene(config, "perceptron", "armelourde", fileName)
+    arene8 = Arn.Arene(config, "armelegere", "armelourde", fileName)
+    arene9 = Arn.Arene(config, "armelegere", "armelegere", fileName)
+    arene10 = Arn.Arene(config, "armelourde", "armelourde", fileName)
+    
+    tl.loopUnRooling8(fileName, arene1, nbParties)
+    tl.loopUnRooling8(fileName, arene2, nbParties)
+    tl.loopUnRooling8(fileName, arene3, nbParties)
+    tl.loopUnRooling8(fileName, arene4, nbParties)
+    tl.loopUnRooling8(fileName, arene5, nbParties)
+    tl.loopUnRooling8(fileName, arene6, nbParties)
+    tl.loopUnRooling8(fileName, arene7, nbParties)
+    tl.loopUnRooling8(fileName, arene8, nbParties)
+    tl.loopUnRooling8(fileName, arene9, nbParties)
+    tl.loopUnRooling8(fileName, arene10, nbParties)
+    print("*** Début de tournois *** Nombre de parties pour chaque duel :", nbParties, " *** taille d'arène :", config, " ***", sep="")
+    print("En ",nbParties, " parties, ", arene1.j1.aim.name, " à gagnée ", arene1.j1.points, " et ", arene1.j2.aim.name, " à gagnée ", arene1.j2.points, sep="")
+    print("En ",nbParties, " parties, ", arene2.j1.aim.name, " à gagnée ", arene2.j1.points, " et ", arene2.j2.aim.name, " à gagnée ", arene2.j2.points, sep="")
+    print("En ",nbParties, " parties, ", arene3.j1.aim.name, " à gagnée ", arene3.j1.points, " et ", arene3.j2.aim.name, " à gagnée ", arene3.j2.points, sep="")
+    print("En ",nbParties, " parties, ", arene4.j1.aim.name, " à gagnée ", arene4.j1.points, " et ", arene4.j2.aim.name, " à gagnée ", arene4.j2.points, sep="")
+    print("En ",nbParties, " parties, ", arene5.j1.aim.name, " à gagnée ", arene5.j1.points, " et ", arene5.j2.aim.name, " à gagnée ", arene5.j2.points, sep="")
+    print("En ",nbParties, " parties, ", arene6.j1.aim.name, " à gagnée ", arene6.j1.points, " et ", arene6.j2.aim.name, " à gagnée ", arene6.j2.points, sep="")
+    print("En ",nbParties, " parties, ", arene7.j1.aim.name, " à gagnée ", arene7.j1.points, " et ", arene7.j2.aim.name, " à gagnée ", arene7.j2.points, sep="")
+    print("En ",nbParties, " parties, ", arene8.j1.aim.name, " à gagnée ", arene8.j1.points, " et ", arene8.j2.aim.name, " à gagnée ", arene8.j2.points, sep="")
+    print("En ",nbParties, " parties, ", arene9.j1.aim.name, " à gagnée ", arene9.j1.points, " et ", arene9.j2.aim.name, " à gagnée ", arene9.j2.points, sep="")
+    print("En ",nbParties, " parties, ", arene10.j1.aim.name, " à gagnée ", arene10.j1.points, " et ", arene10.j2.aim.name, " à gagnée ", arene10.j2.points, sep="")
+    print("*** Fin du tournois à bientôt ***")
+
 if __name__ == "__main__":
     debug = False
     size  = 9
@@ -19,6 +54,7 @@ if __name__ == "__main__":
     archives = False
     u4=False
     u8=False
+    twt = False
     
     """
         Récupération des args
@@ -55,6 +91,10 @@ if __name__ == "__main__":
             elif arg=="--unrol8" or arg=="-u8":
                 u4 = True
 
+            elif arg=="--tournois" or arg=="-twt":
+                twt = True
+                loop = int(sys.argv[i+1])
+
             elif arg=="--help" or arg=="-h":
                 print("---Bienvenu sur Turtle Wars --- By Mahamt Youssouf : #yyouss@etud.univ-angers.fr---")
                 print("--size (-s) pour fixer la taille")
@@ -73,8 +113,12 @@ if __name__ == "__main__":
     if archives==True:
         tl.archives(fileName)
         exit()
+    
+    elif twt==True:
+        tournois(size, loop, fileName)
+        exit()
 
-    if debug==True:
+    elif debug==True:
         if save==True:
             if u8==True and loop>=8:
                 tl.loopUnRooling8DebugSave(fileName, monAr, loop)
